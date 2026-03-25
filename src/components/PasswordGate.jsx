@@ -60,14 +60,14 @@ export default function PasswordGate({ children }) {
           color: '#8a7e6e',
           letterSpacing: '1.5px',
           marginBottom: '8px',
-        }}>PROBLEM SET 4</div>
+        }}>PROB AND COMPUTING</div>
         <h1 style={{
           fontSize: '22px',
           fontWeight: 700,
           color: '#f0e6d3',
           marginBottom: '24px',
           lineHeight: 1.3,
-        }}>Proof Walkthroughs</h1>
+        }}>Study Guide</h1>
         <input
           type="password"
           value={input}

@@ -34,7 +34,7 @@ const problems = [
 
 export default function Home() {
   useEffect(() => {
-    document.title = 'PS4 Proof Walkthroughs'
+    document.title = 'Prob and Computing Study Guide'
   }, [])
 
   return (
@@ -84,10 +84,10 @@ export default function Home() {
       `}</style>
 
       <div className="container">
-        <p className="label">PROBLEM SET 4</p>
-        <h1>Proof Walkthroughs</h1>
+        <p className="label">PROB AND COMPUTING</p>
+        <h1>Study Guide</h1>
         <p className="subtitle">
-          Step-by-step breakdowns of each proof, with intuition, key ideas, and
+          Step-by-step proof walkthroughs with intuition, key ideas, and
           the formal details worked out in full.
         </p>
 
