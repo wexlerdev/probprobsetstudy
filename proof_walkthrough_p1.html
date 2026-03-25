@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS4 Problem 1 — Tail Sum Formula for Expectation</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,ital,wght@8..60,0,400;8..60,0,600;8..60,0,700;8..60,1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: #1a1612;
+    color: #c4b5a0;
+    font-family: 'Source Serif 4', Georgia, serif;
+    padding: 36px 20px;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .container { max-width: 660px; margin: 0 auto; }
+
+  /* Header */
+  .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: #8a7e6e;
+    letter-spacing: 1.5px; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 28px; font-weight: 700; color: #f0e6d3;
+    line-height: 1.2; margin-bottom: 10px;
+  }
+  .subtitle {
+    font-size: 15px; color: #8a7e6e; font-style: italic; line-height: 1.6;
+  }
+
+  /* Math blocks */
+  .math-inline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; color: #f0e6d3;
+    background: #252019; padding: 1px 5px; border-radius: 3px;
+  }
+  .math-block {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px; color: #f0e6d3;
+    background: #221e1a; border-radius: 8px;
+    padding: 16px 20px; margin: 14px 0;
+    line-height: 1.8; border: 1px solid #2e2924;
+    overflow-x: auto; white-space: pre;
+  }
+
+  /* Step blocks */
+  .step {
+    margin-bottom: 32px; padding-bottom: 28px;
+    border-bottom: 1px solid #2a2520;
+  }
+  .step:last-of-type { border-bottom: none; }
+  .step-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .step-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: #1a1612; background: #d4a574; border-radius: 4px;
+    padding: 2px 8px; font-weight: 600; flex-shrink: 0;
+  }
+  .step-title {
+    font-family: 'Source Serif 4', serif; font-size: 18px;
+    color: #f0e6d3; font-weight: 600;
+  }
+  .step p { margin-top: 12px; }
+  .step p:first-child { margin-top: 0; }
+
+  /* Callouts */
+  .callout {
+    border-radius: 0 8px 8px 0; padding: 12px 16px;
+    margin: 14px 0; font-size: 14px; line-height: 1.7;
+  }
+  .callout-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 1px; margin-bottom: 4px;
+  }
+  .callout-intuition { border-left: 3px solid #7eb8da; background: #1a2228; }
+  .callout-intuition .callout-label { color: #7eb8da; }
+  .callout-warning { border-left: 3px solid #f25c54; background: #281a1a; }
+  .callout-warning .callout-label { color: #f25c54; }
+  .callout-key { border-left: 3px solid #d4a574; background: #28221a; }
+  .callout-key .callout-label { color: #d4a574; }
+  .callout-connection { border-left: 3px solid #a8d4a0; background: #1a2518; }
+  .callout-connection .callout-label { color: #a8d4a0; }
+
+  /* Toggle / expandable sections */
+  .toggle {
+    margin: 10px 0; border-left: 2px solid #3a3530; padding-left: 16px;
+  }
+  .toggle-btn {
+    background: none; border: none; color: #d4a574; cursor: pointer;
+    font-family: 'Source Serif 4', serif; font-size: 14px; padding: 0;
+    font-style: italic; opacity: 0.9; text-align: left;
+  }
+  .toggle-btn:hover { opacity: 1; }
+  .toggle-content {
+    display: none; margin-top: 8px; color: #a89880;
+    font-size: 14px; line-height: 1.7;
+  }
+  .toggle-content.open { display: block; }
+
+  /* Hoverable terms */
+  .term {
+    color: #d4a574; border-bottom: 1px dashed #d4a574;
+    cursor: help; position: relative; display: inline;
+  }
+  .term-tooltip {
+    display: none; position: absolute;
+    bottom: calc(100% + 6px); left: 0; z-index: 10;
+    background: #2e2924; border: 1px solid #3a3530; border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; color: #c4b5a0; width: 280px;
+    line-height: 1.5; font-style: normal; font-weight: 400;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    white-space: normal;
+  }
+  .term:hover .term-tooltip { display: block; }
+
+  /* Boxed sections */
+  .box {
+    background: #221e1a; border-radius: 10px;
+    padding: 24px; border: 1px solid #2e2924; margin-top: 28px;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 1.5px; margin-bottom: 12px;
+  }
+  .box p { margin-bottom: 14px; }
+  .box p:last-child { margin-bottom: 0; }
+
+  strong { color: #f0e6d3; }
+  em { font-style: italic; }
+
+  .proof-summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: #c4b5a0; line-height: 2.2;
+  }
+  .proof-summary .comment { color: #8a7e6e; }
+
+  .footer {
+    margin-top: 32px; font-size: 12px; color: #5a5245;
+    text-align: center; font-style: italic;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="label">PROBLEM SET 4 · PROBLEM 1</div>
+  <h1>Tail Sum Formula for Expectation</h1>
+  <p class="subtitle">Proving that for a non-negative random variable Y on a finite probability space:</p>
+  <div class="math-block">E[Y] = ∫₀<sup>∞</sup> P(Y ≥ t) dt</div>
+
+  <!-- STEP 0 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">STEP 0</span>
+      <span class="step-title">What we're given and what we need</span>
+    </div>
+
+    <p>We have a
+      <span class="term">finite probability space<span class="term-tooltip">A triple (Ω, F, P) where the sample space Ω = {ω₁, ω₂, …, ωₙ} is a finite set. F is the set of all subsets of Ω (events), and P assigns a probability to each outcome such that Σ P(ωᵢ) = 1.</span></span>
+      (Ω, F, P) and a
+      <span class="term">non-negative random variable<span class="term-tooltip">A function Y: Ω → [0, ∞). It assigns a non-negative real number to each outcome. "Non-negative" is crucial — the proof breaks for random variables that can be negative.</span></span>
+      Y on Ω.
+    </p>
+
+    <p>The standard definition of expectation for a discrete r.v. is:</p>
+    <div class="math-block">E[Y] = Σ<sub>ω ∈ Ω</sub> Y(ω) · P(ω)</div>
+
+    <p>We want to show this equals the integral of the
+      <span class="term">survival function<span class="term-tooltip">P(Y ≥ t) as a function of t. It starts at 1 (when t = 0, since Y ≥ 0 always) and decreases to 0. The "tail" of the distribution. In your moment explorer, this is the area to the right of t under the PMF — but accumulated.</span></span>.
+      This is a change of perspective: instead of summing over outcomes, we integrate over thresholds.
+    </p>
+
+    <div class="callout callout-intuition">
+      <div class="callout-label">INTUITION</div>
+      Think of it geometrically. Plot Y(ω) as a bar for each outcome ω.
+      E[Y] is the total "weighted area" of all bars.
+      You can compute this area by summing horizontally (each bar's height × its probability)
+      or by sweeping a horizontal line upward and asking "how much probability mass is still above me at height t?"
+      Both give the same area. That's this identity.
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">STEP 1</span>
+      <span class="step-title">Rewrite each Y(ω) as an integral</span>
+    </div>
+
+    <p>This is the hint Valettas gives. For any fixed outcome ω ∈ Ω, the value Y(ω) is just
+    a non-negative real number. We can write any non-negative number as the length of an interval:</p>
+
+    <div class="math-block">Y(ω) = ∫₀<sup>∞</sup> 𝟙{t ≤ Y(ω)} dt  =  ∫₀<sup>∞</sup> 𝟙<sub>[0, Y(ω)]</sub>(t) dt</div>
+
+    <p>where
+      <span class="term">𝟙{t ≤ Y(ω)}<span class="term-tooltip">The indicator function. It equals 1 when the condition is true (t ≤ Y(ω)) and 0 otherwise. Also written as 𝟙_A(t) where A = [0, Y(ω)]. It "selects" the interval from 0 to Y(ω).</span></span>
+      is the indicator that t falls in [0, Y(ω)].
+    </p>
+
+    <div class="callout callout-key">
+      <div class="callout-label">KEY IDEA</div>
+      <p>Why is this true? The integral of the constant function 1 from 0 to Y(ω) is just Y(ω).
+      The indicator function 𝟙{t ≤ Y(ω)} equals 1 on [0, Y(ω)] and 0 after that, so
+      integrating it over [0, ∞) gives exactly the length of that interval — which is Y(ω).</p>
+      <p style="margin-top: 8px;">This is almost tautological, but it's the engine of the entire proof.
+      The trick is: we've turned a <em>number</em> into an <em>integral</em>, which lets us
+      swap the order of integration and summation in the next step.</p>
+    </div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ Why does this only work for Y ≥ 0?</button>
+      <div class="toggle-content">
+        If Y(ω) were negative, the interval [0, Y(ω)] would be empty and the integral would
+        be 0, not Y(ω). The representation Y = ∫ 𝟙{t ≤ Y} dt only recovers Y when Y ≥ 0.
+        For general random variables, you'd need to split into positive and negative parts
+        and handle them separately.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">STEP 2</span>
+      <span class="step-title">Substitute into the definition of E[Y]</span>
+    </div>
+
+    <p>Starting from the standard definition and plugging in our integral representation:</p>
+    <div class="math-block">E[Y] = Σ<sub>ω ∈ Ω</sub> Y(ω) · P(ω)</div>
+    <div class="math-block">     = Σ<sub>ω ∈ Ω</sub> [ ∫₀<sup>∞</sup> 𝟙{t ≤ Y(ω)} dt ] · P(ω)</div>
+
+    <p>This is just a direct substitution — nothing clever yet. We've replaced Y(ω) with
+    its integral representation from Step 1.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">WATCH OUT</div>
+      At this point we have a sum (over ω) of integrals (over t). The next step is to
+      swap their order. In general, you can't always swap sums and integrals — you need
+      a justification. Here we get it for free because Ω is <strong>finite</strong>.
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">STEP 3</span>
+      <span class="step-title">Swap the sum and the integral (Fubini)</span>
+    </div>
+
+    <p>Because Ω is finite and the integrand is non-negative, we can exchange the order:</p>
+    <div class="math-block">E[Y] = Σ<sub>ω ∈ Ω</sub> [ ∫₀<sup>∞</sup> 𝟙{t ≤ Y(ω)} dt ] · P(ω)</div>
+    <div class="math-block">     = ∫₀<sup>∞</sup> [ Σ<sub>ω ∈ Ω</sub> 𝟙{t ≤ Y(ω)} · P(ω) ] dt</div>
+
+    <p>We pulled the sum inside the integral.
+      <span class="term">Fubini's theorem / Tonelli's theorem<span class="term-tooltip">Fubini's theorem says you can swap the order of integration (or sum and integral) when the function is integrable with respect to the product measure. Tonelli's theorem is the version for non-negative functions, where it always works without checking integrability first. Since Ω is finite, the sum is really just a finite linear combination — you can always swap a finite sum past an integral.</span></span>
+    </p>
+
+    <div class="callout callout-key">
+      <div class="callout-label">KEY IDEA</div>
+      <p>This swap is the <em>core move</em>. Before the swap, we were organized by outcome:
+      "for each ω, how much does it contribute?" After the swap, we're organized by threshold:
+      "for each height t, how much probability mass sits above t?"</p>
+      <p style="margin-top: 8px;">In this finite setting, the justification is trivial (finite sum always commutes with integral).
+      But this exact move — reorganizing a computation by swapping the order — is what Valettas
+      wants to burn into your reflexes. It appears in the proof of Markov's inequality, in the
+      analysis of randomized algorithms, and throughout Week 6–7 material.</p>
+    </div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ Why is finiteness of Ω important here?</button>
+      <div class="toggle-content">
+        A finite sum is just addition — you can always pull a finite sum past an integral (or any
+        linear operation). If Ω were countably infinite, you'd need dominated convergence or
+        monotone convergence to justify the swap. If Ω were uncountable, you'd need full
+        Fubini/Tonelli. The problem specifies "finite probability space" to keep the measure
+        theory lightweight, but the result holds much more generally.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">STEP 4</span>
+      <span class="step-title">Recognize the inner sum as P(Y ≥ t)</span>
+    </div>
+
+    <p>Look at what's inside the integral now:</p>
+    <div class="math-block">Σ<sub>ω ∈ Ω</sub> 𝟙{t ≤ Y(ω)} · P(ω)</div>
+
+    <p>This is summing P(ω) over exactly those outcomes where Y(ω) ≥ t. That is, by definition:</p>
+    <div class="math-block">Σ<sub>ω ∈ Ω</sub> 𝟙{t ≤ Y(ω)} · P(ω)  =  Σ<sub>ω : Y(ω) ≥ t</sub> P(ω)  =  P(Y ≥ t)</div>
+
+    <p>This is just the definition of probability for a discrete space. The
+      <span class="term">indicator function acts as a filter<span class="term-tooltip">𝟙{t ≤ Y(ω)} is 1 when ω is in the event {Y ≥ t} and 0 otherwise. Multiplying by P(ω) and summing gives exactly the probability of that event. This is the bridge: a sum of weighted indicators = probability of the event.</span></span>,
+      selecting only the outcomes that land in the event {Y ≥ t}.
+    </p>
+
+    <div class="callout callout-intuition">
+      <div class="callout-label">INTUITION</div>
+      The magic has already happened. We now have E[Y] = ∫ P(Y ≥ t) dt.
+      The indicator did double duty: it encoded Y(ω) as a length (Step 1), and after
+      the swap, it encoded the event {Y ≥ t} as a probability (this step).
+      Same function, two readings — that's the elegance.
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">STEP 5</span>
+      <span class="step-title">Conclude</span>
+    </div>
+
+    <p>Combining Steps 3 and 4:</p>
+    <div class="math-block">E[Y] = ∫₀<sup>∞</sup> P(Y ≥ t) dt          □</div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ What about the upper limit of ∞?</button>
+      <div class="toggle-content">
+        Since Ω is finite, Y takes finitely many values — so there's some maximum value M = max Y(ω).
+        For all t > M, the event {Y ≥ t} is empty and P(Y ≥ t) = 0. So the integral is really
+        from 0 to M, and the ∞ is cosmetic. In the infinite case, you'd need integrability of Y to
+        ensure the integral converges.
+      </div>
+    </div>
+  </div>
+
+  <!-- Why it matters -->
+  <div class="box">
+    <div class="box-label" style="color: #d4a574;">WHY THIS MATTERS FOR THE REST OF THE COURSE</div>
+
+    <p><strong>1. Computing expectations via tail bounds.</strong>
+    Sometimes computing E[X] directly (summing x · P(X = x)) is hard, but you already have
+    good bounds on P(X ≥ t). This formula lets you convert tail bounds into expectation bounds.
+    Example: expected maximum degree in G(n,p) in Problem 4 — you bound the tail of the
+    degree distribution using Chernoff, then integrate.</p>
+
+    <p><strong>2. The "layer cake" principle.</strong>
+    This proof is a special case of a general technique: decompose a quantity into layers
+    (here, horizontal slices at each height t), compute each layer separately, then integrate.
+    This shows up in bounding moments (E[Y^k] = ∫ k·t^(k-1) P(Y ≥ t) dt), relating
+    different norms, and in the entropy material in Week 14.</p>
+
+    <p><strong>3. The Fubini reflex.</strong>
+    The core technical move — "I have a sum of integrals, let me swap the order" — is the
+    single most reusable proof technique in the course. Valettas is introducing it here in a
+    clean, low-stakes setting so it becomes automatic.</p>
+
+    <p><strong>4. Connecting probability to analysis.</strong>
+    The formula E[Y] = ∫ P(Y ≥ t) dt is really saying: the expectation equals the area under
+    the survival curve. This is the probabilistic version of integration by parts, and it's the
+    bridge between discrete probability (counting outcomes) and continuous analysis (integrating
+    functions). This bridge is exactly what you need for Chernoff bounds (Problem 2), where you
+    optimize over a continuous parameter s.</p>
+  </div>
+
+  <!-- Proof at a glance -->
+  <div class="box">
+    <div class="box-label" style="color: #7eb8da;">PROOF AT A GLANCE</div>
+    <div class="proof-summary">
+      <div>E[Y]</div>
+      <div class="comment">  // definition</div>
+      <div>= Σ<sub>ω</sub> Y(ω) · P(ω)</div>
+      <div class="comment">  // represent Y(ω) as ∫ indicator</div>
+      <div>= Σ<sub>ω</sub> [∫₀<sup>∞</sup> 𝟙{t ≤ Y(ω)} dt] · P(ω)</div>
+      <div class="comment">  // swap sum and integral (Ω finite)</div>
+      <div>= ∫₀<sup>∞</sup> [Σ<sub>ω</sub> 𝟙{t ≤ Y(ω)} · P(ω)] dt</div>
+      <div class="comment">  // inner sum = P(Y ≥ t)</div>
+      <div>= ∫₀<sup>∞</sup> P(Y ≥ t) dt</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Hover dotted terms for definitions · click arrows for deeper context
+  </div>
+
+</div>
+
+<script>
+function toggleExpand(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.classList.contains('open');
+  content.classList.toggle('open');
+  btn.textContent = (isOpen ? '▸ ' : '▾ ') + btn.textContent.slice(2);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS4 Problem 4 — Maximal Degree on Random Graphs</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,ital,wght@8..60,0,400;8..60,0,600;8..60,0,700;8..60,1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: #1a1612;
+    color: #c4b5a0;
+    font-family: 'Source Serif 4', Georgia, serif;
+    padding: 36px 20px 60px;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: #8a7e6e;
+    letter-spacing: 1.5px; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 28px; font-weight: 700; color: #f0e6d3;
+    line-height: 1.2; margin-bottom: 10px;
+  }
+  .subtitle {
+    font-size: 15px; color: #8a7e6e; font-style: italic; line-height: 1.6;
+  }
+
+  .math-block {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; color: #f0e6d3;
+    background: #221e1a; border-radius: 8px;
+    padding: 14px 18px; margin: 14px 0;
+    line-height: 1.9; border: 1px solid #2e2924;
+    overflow-x: auto; white-space: pre-wrap;
+  }
+  .math-inline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: #f0e6d3;
+    background: #252019; padding: 1px 5px; border-radius: 3px;
+  }
+
+  .part-header {
+    margin: 44px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #d4a574;
+  }
+  .part-header h2 {
+    font-size: 22px; font-weight: 700; color: #f0e6d3; margin: 0;
+  }
+  .part-header .part-goal {
+    font-size: 14px; color: #8a7e6e; margin-top: 6px;
+    font-style: italic; line-height: 1.6;
+  }
+
+  .step {
+    margin-bottom: 32px; padding-bottom: 28px;
+    border-bottom: 1px solid #2a2520;
+  }
+  .step:last-of-type { border-bottom: none; }
+  .step-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .step-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: #1a1612; background: #d4a574; border-radius: 4px;
+    padding: 2px 8px; font-weight: 600; flex-shrink: 0;
+  }
+  .step-badge-upper { background: #7eb8da; }
+  .step-badge-lower { background: #a8d4a0; }
+  .step-title {
+    font-family: 'Source Serif 4', serif; font-size: 18px;
+    color: #f0e6d3; font-weight: 600;
+  }
+  .step p { margin-top: 12px; }
+  .step p:first-child { margin-top: 0; }
+
+  .callout {
+    border-radius: 0 8px 8px 0; padding: 12px 16px;
+    margin: 14px 0; font-size: 14px; line-height: 1.7;
+  }
+  .callout p { margin-top: 8px; }
+  .callout p:first-of-type { margin-top: 0; }
+  .callout-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 1px; margin-bottom: 4px;
+  }
+  .callout-intuition { border-left: 3px solid #7eb8da; background: #1a2228; }
+  .callout-intuition .callout-label { color: #7eb8da; }
+  .callout-warning { border-left: 3px solid #f25c54; background: #281a1a; }
+  .callout-warning .callout-label { color: #f25c54; }
+  .callout-key { border-left: 3px solid #d4a574; background: #28221a; }
+  .callout-key .callout-label { color: #d4a574; }
+  .callout-connection { border-left: 3px solid #a8d4a0; background: #1a2518; }
+  .callout-connection .callout-label { color: #a8d4a0; }
+
+  .toggle {
+    margin: 10px 0; border-left: 2px solid #3a3530; padding-left: 16px;
+  }
+  .toggle-btn {
+    background: none; border: none; color: #d4a574; cursor: pointer;
+    font-family: 'Source Serif 4', serif; font-size: 14px; padding: 0;
+    font-style: italic; opacity: 0.9; text-align: left;
+  }
+  .toggle-btn:hover { opacity: 1; }
+  .toggle-content {
+    display: none; margin-top: 8px; color: #a89880;
+    font-size: 14px; line-height: 1.7;
+  }
+  .toggle-content.open { display: block; }
+  .toggle-content .math-block { font-size: 13px; }
+
+  .term {
+    color: #d4a574; border-bottom: 1px dashed #d4a574;
+    cursor: help; position: relative; display: inline;
+  }
+  .term-tooltip {
+    display: none; position: absolute;
+    bottom: calc(100% + 6px); left: 0; z-index: 10;
+    background: #2e2924; border: 1px solid #3a3530; border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; color: #c4b5a0; width: 300px;
+    line-height: 1.5; font-style: normal; font-weight: 400;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    white-space: normal;
+  }
+  .term:hover .term-tooltip { display: block; }
+
+  .box {
+    background: #221e1a; border-radius: 10px;
+    padding: 24px; border: 1px solid #2e2924; margin-top: 28px;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 1.5px; margin-bottom: 12px;
+  }
+  .box p { margin-bottom: 14px; }
+  .box p:last-child { margin-bottom: 0; }
+
+  strong { color: #f0e6d3; }
+  em { font-style: italic; }
+
+  .separator {
+    height: 1px; background: linear-gradient(to right, transparent, #3a3530, transparent);
+    margin: 40px 0;
+  }
+
+  .footer {
+    margin-top: 36px; font-size: 12px; color: #5a5245;
+    text-align: center; font-style: italic;
+  }
+
+  .proof-summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: #c4b5a0; line-height: 2.2;
+  }
+  .proof-summary .comment { color: #8a7e6e; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="label">PROBLEM SET 4 · PROBLEM 4</div>
+  <h1>Maximal Degree on Random Graphs</h1>
+  <p class="subtitle">
+    In a sparse Erdős-Rényi graph with constant expected degree, the maximum degree
+    is Θ(log n / log log n) with high probability.
+    This is the "combine everything" problem: Chernoff + union bound + Stirling-type estimates.
+  </p>
+
+
+  <!-- ============= SETUP ============= -->
+  <div class="part-header">
+    <h2>Setup — The Model and the Goal</h2>
+    <div class="part-goal">Understanding the random graph, what "constant expected degree" means, and why Θ(log n / log log n) is the answer.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">SETUP</span>
+      <span class="step-title">The random graph G(n, p)</span>
+    </div>
+
+    <p>We work in the
+      <span class="term">Erdős-Rényi model G(n, p)<span class="term-tooltip">The random graph on n labelled vertices where each of the C(n,2) possible edges is included independently with probability p. This is the most fundamental random graph model. The parameter p can depend on n — that's how you explore different density regimes.</span></span>.
+      The key assumption is that the expected degree is constant:
+    </p>
+    <div class="math-block">d := p(n − 1) = O(1)</div>
+
+    <p>This means p = d/(n−1) ≈ d/n — the graph is <strong>sparse</strong>. As n → ∞,
+    the edge probability shrinks so that each vertex connects to a bounded average number of neighbors.</p>
+
+    <p>For any fixed vertex v, its degree is:</p>
+    <div class="math-block">deg(v) ~ Binomial(n − 1, p),     E[deg(v)] = d = O(1)</div>
+
+    <div class="callout callout-intuition">
+      <div class="callout-label">INTUITION</div>
+      <p>With d = O(1), the "typical" vertex has degree around d — a small constant like 3 or 5.
+      But with n vertices, <em>some</em> vertex is likely to get lucky and have many more edges
+      than average. How lucky can the luckiest vertex get? That's what Δ(G) measures.</p>
+      <p>The answer log n / log log n is much larger than d but much smaller than n. It's the
+      sweet spot where "a single vertex being this lucky" is improbable but "no vertex among n
+      being this lucky" is also improbable.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">SETUP</span>
+      <span class="step-title">The goal: Θ means both directions</span>
+    </div>
+
+    <p>We need to show that with probability ≥ 0.99:</p>
+    <div class="math-block">Δ(G) = max<sub>v∈V(G)</sub> deg(v) = Θ(log n / log log n)</div>
+
+    <p>This requires <strong>two bounds</strong>:</p>
+    <div class="math-block">Upper bound:  P(Δ(G) ≥ C · log n / log log n) ≤ 0.01     for some large C
+Lower bound:  P(Δ(G) ≤ c · log n / log log n) ≤ 0.01     for some small c</div>
+
+    <p>The upper bound uses <strong>Chernoff + union bound</strong> (bounding the max by bounding each vertex).
+    The lower bound uses the <strong>first moment method</strong> (showing at least one vertex likely has high degree).</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-label">WATCH OUT</div>
+      <p>This is <em>not</em> a second moment method problem. The second moment method proves
+      "X > 0 whp" for a counting variable. Here we're bounding a maximum, which is a different
+      beast. The tool is Chernoff applied to each vertex separately, then combined via union bound
+      (upper) or counting argument (lower).</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">SETUP</span>
+      <span class="step-title">The key estimate — tail of a sparse Binomial</span>
+    </div>
+
+    <p>Everything hinges on understanding P(Bin(n−1, p) ≥ k) when d = p(n−1) = O(1) and k is growing.
+    We'll need both upper and lower bounds on this quantity.</p>
+
+    <p><strong>Upper bound on the tail.</strong> For any k ≥ 1:</p>
+    <div class="math-block">P(Bin(n−1, p) ≥ k) ≤ C(n−1, k) · p<sup>k</sup></div>
+
+    <p>This drops the (1−p)<sup>n−1−k</sup> factor (which is ≤ 1). Now use the standard
+      <span class="term">binomial coefficient bound<span class="term-tooltip">C(n,k) ≤ (en/k)^k. This follows from: C(n,k) = n!/(k!(n-k)!) ≤ n^k/k! ≤ n^k/(k/e)^k = (en/k)^k, where the last step uses Stirling's approximation k! ≥ (k/e)^k.</span></span>:
+    </p>
+    <div class="math-block">C(n−1, k) · p<sup>k</sup> ≤ (e(n−1)p / k)<sup>k</sup> = (ed/k)<sup>k</sup></div>
+
+    <p>So:</p>
+    <div class="math-block">P(deg(v) ≥ k) ≤ (ed/k)<sup>k</sup></div>
+
+    <p><strong>Lower bound on the tail.</strong> We bound from below using just the single term P(deg(v) = k):</p>
+    <div class="math-block">P(deg(v) ≥ k) ≥ P(deg(v) = k) = C(n−1, k) · p<sup>k</sup> · (1−p)<sup>n−1−k</sup></div>
+
+    <p>Since p = d/(n−1) and k = o(n), the last factor satisfies:</p>
+    <div class="math-block">(1−p)<sup>n−1−k</sup> = (1 − d/(n−1))<sup>n−1−k</sup> ≥ e<sup>−d</sup> · (1 − o(1))</div>
+
+    <p>For the binomial coefficient, we use the lower bound <span class="math-inline">C(n−1, k) ≥ ((n−1)/k)<sup>k</sup> / e<sup>k</sup></span>
+    (from Stirling). Combined:</p>
+    <div class="math-block">P(deg(v) = k) ≥ (d/k)<sup>k</sup> · e<sup>−d</sup> · (1 − o(1))     for k = o(n)</div>
+
+    <div class="callout callout-key">
+      <div class="callout-label">KEY IDEA</div>
+      <p>Both bounds have the same shape: (const · d/k)<sup>k</sup>. The upper bound has (ed/k)<sup>k</sup>,
+      the lower bound has roughly (d/k)<sup>k</sup> · e<sup>−d</sup>. Since d is a constant, these
+      differ by at most a constant factor in the exponent. The dominant behavior is (d/k)<sup>k</sup> = exp(−k log(k/d)).</p>
+      <p>This is a <em>super-exponential</em> decay in k (the exponent itself grows with k), which is
+      faster than Gaussian tails but the key structure is k log k — and that's where log n / log log n comes from.</p>
+    </div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ Connection to Poisson approximation</button>
+      <div class="toggle-content">
+        <p>When d = O(1), the Binomial(n−1, d/(n−1)) distribution is well-approximated by
+        Poisson(d). For a Poisson with mean d:</p>
+        <div class="math-block">P(X = k) = e<sup>−d</sup> d<sup>k</sup> / k!</div>
+        <p>By Stirling, k! ≈ (k/e)<sup>k</sup> √(2πk), so:</p>
+        <div class="math-block">P(X = k) ≈ e<sup>−d</sup> (ed/k)<sup>k</sup> / √(2πk)</div>
+        <p>This matches our binomial estimates. The Poisson approximation makes the algebra cleaner
+        and is often used in research, but for a homework proof the direct binomial bounds are more rigorous.
+        The Poisson approximation is the subject of Week 11 — you'll see it formalized there.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============= UPPER BOUND ============= -->
+  <div class="separator"></div>
+  <div class="part-header">
+    <h2>Upper Bound: Δ(G) ≤ C log n / log log n</h2>
+    <div class="part-goal">Show that with probability ≥ 0.99, no vertex has degree exceeding C log n / log log n.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge step-badge-upper">U.1</span>
+      <span class="step-title">Union bound over all vertices</span>
+    </div>
+
+    <p>The maximum degree exceeds k only if <em>some</em> vertex has degree ≥ k:</p>
+    <div class="math-block">P(Δ(G) ≥ k) = P(∃v : deg(v) ≥ k)
+              ≤ Σ<sub>v</sub> P(deg(v) ≥ k)        (union bound)
+              = n · P(deg(v) ≥ k)            (identical distribution)</div>
+
+    <p>Using our tail bound:</p>
+    <div class="math-block">P(Δ(G) ≥ k) ≤ n · (ed/k)<sup>k</sup></div>
+
+    <div class="callout callout-key">
+      <div class="callout-label">KEY IDEA</div>
+      <p>The union bound is the fundamental tool for bounding maxima. You're trading a hard
+      question ("what's the probability the maximum exceeds k?") for an easy one
+      ("what's the probability a fixed vertex exceeds k?") at the cost of a factor of n.
+      That factor of n is what creates the log n in the threshold.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge step-badge-upper">U.2</span>
+      <span class="step-title">Finding the threshold — where does n · (ed/k)<sup>k</sup> vanish?</span>
+    </div>
+
+    <p>We need to find k such that n · (ed/k)<sup>k</sup> ≤ 0.01. Take logarithms:</p>
+    <div class="math-block">log n + k · log(ed/k) ≤ log(0.01)
+
+log n ≤ k · log(k/(ed))  +  |log(0.01)|
+
+Ignoring the constant |log(0.01)|:
+log n ≤ k · log(k/(ed))
+log n ≤ k log k − k log(ed)</div>
+
+    <p>Now set <span class="math-inline">k = C · log n / log log n</span> and check if this works:</p>
+    <div class="math-block"><strong>Compute k log k:</strong>
+
+k log k = (C log n / log log n) · log(C log n / log log n)
+        = (C log n / log log n) · [log C + log log n − log log log n]
+
+The dominant term is:
+        = (C log n / log log n) · log log n · (1 − o(1))
+        = C log n · (1 − o(1))</div>
+
+    <div class="math-block"><strong>Compute k log(ed):</strong>
+
+k log(ed) = (C log n / log log n) · log(ed)
+          = O(log n / log log n)       since d = O(1)</div>
+
+    <p>So:</p>
+    <div class="math-block">k log(k/(ed)) = k log k − k log(ed)
+               = C log n · (1 − o(1)) − O(log n / log log n)
+               = C log n · (1 − o(1))</div>
+
+    <p>For this to exceed log n, we need C > 1 (plus the o(1) terms). Choose any C > 1:</p>
+    <div class="math-block">n · (ed/k)<sup>k</sup> ≤ exp(log n − C log n · (1 − o(1)))
+                    = exp(−(C − 1 − o(1)) · log n)
+                    = n<sup>−(C−1−o(1))</sup>
+                    → 0     as n → ∞</div>
+
+    <p>So for large enough C (any C > 1 suffices asymptotically):</p>
+    <div class="math-block">P(Δ(G) ≥ C log n / log log n) ≤ n<sup>−(C−1−o(1))</sup> ≤ 0.01     for large n     □</div>
+
+    <div class="callout callout-intuition">
+      <div class="callout-label">INTUITION</div>
+      <p>The key computation: k log k ≈ C log n. This is where log n / log log n comes from.
+      We need k log k ≈ log n (to cancel the union bound factor of n), and the solution to
+      k log k = log n is k ≈ log n / log log n. The log log n in the denominator comes from
+      "dividing out" the log k factor.</p>
+      <p>This is a self-referential equation: k depends on log k which depends on k. The solution
+      is the log n / log log n scale — a characteristic of problems where the tail decays like
+      (const/k)<sup>k</sup> (faster than exponential but slower than doubly exponential).</p>
+    </div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ Why is the log log n appearing? A deeper look.</button>
+      <div class="toggle-content">
+        <p>The tail P(deg(v) ≥ k) ≈ (ed/k)<sup>k</sup> = exp(−k log(k/ed)). The union bound asks:
+        when does n · exp(−k log(k/ed)) vanish? I.e., when does k log(k/ed) > log n?</p>
+        <p>If the tail were merely exponential — like exp(−ck) — then we'd need k > (log n)/c,
+        giving a threshold of Θ(log n). That's what you'd get for, say, Geometric tails.</p>
+        <p>But our tail is exp(−k log k), which is <em>super-exponential</em>. The extra log k factor
+        means you need less k to overwhelm log n. Specifically, k = log n / log log n gives
+        k log k ≈ log n. The log log n discount comes from the super-exponential decay.</p>
+        <p>Compare: Gaussian tails give exp(−ck²), leading to thresholds of Θ(√(log n)).
+        Our tail is between Gaussian and exponential, so the threshold is between √(log n) and log n.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============= LOWER BOUND ============= -->
+  <div class="separator"></div>
+  <div class="part-header">
+    <h2>Lower Bound: Δ(G) ≥ c log n / log log n</h2>
+    <div class="part-goal">Show that with probability ≥ 0.99, at least one vertex has degree at least c log n / log log n.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge step-badge-lower">L.1</span>
+      <span class="step-title">Count the expected number of high-degree vertices</span>
+    </div>
+
+    <p>Let X = #{v ∈ V(G) : deg(v) ≥ k}. Then:</p>
+    <div class="math-block">E[X] = n · P(deg(v) ≥ k)</div>
+
+    <p>Using our lower bound on the tail (from Setup), for k = c · log n / log log n:</p>
+    <div class="math-block">P(deg(v) ≥ k) ≥ P(deg(v) = k) ≥ (d/k)<sup>k</sup> · e<sup>−d</sup> · (1 − o(1))</div>
+
+    <p>Taking logs, with k = c log n / log log n:</p>
+    <div class="math-block">log P(deg(v) ≥ k) ≥ k log(d/k) − d + o(1)
+                    = −k log(k/d) − d + o(1)
+                    = −k log k + k log d − d + o(1)</div>
+
+    <p>Using the same computation as the upper bound (k log k = c log n · (1 − o(1))):</p>
+    <div class="math-block">log P(deg(v) ≥ k) ≥ −c log n · (1 − o(1)) + O(log n / log log n) − d
+                    = −c log n · (1 − o(1))</div>
+
+    <p>Therefore:</p>
+    <div class="math-block">log E[X] = log n + log P(deg(v) ≥ k)
+           ≥ log n − c log n · (1 − o(1))
+           = (1 − c) log n · (1 + o(1))</div>
+
+    <div class="callout callout-key">
+      <div class="callout-label">KEY IDEA</div>
+      <p>For c < 1: log E[X] ≈ (1−c) log n → ∞, so E[X] → ∞.
+      The expected number of vertices with degree ≥ c log n / log log n grows polynomially in n.</p>
+      <p>For c > 1: log E[X] ≈ (1−c) log n → −∞, so E[X] → 0, and by
+      <span class="term">Markov's inequality (first moment method)<span class="term-tooltip">P(X ≥ 1) ≤ E[X]. If E[X] → 0, then P(X ≥ 1) → 0, i.e., X = 0 whp. This is the "first moment method" — if the expected count vanishes, the thing doesn't exist.</span></span>,
+      X = 0 whp. So the threshold between "high-degree vertices exist" and "they don't" is
+      at c = 1 (up to the constant depending on d).</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge step-badge-lower">L.2</span>
+      <span class="step-title">From E[X] → ∞ to P(X ≥ 1) → 1</span>
+    </div>
+
+    <p>E[X] → ∞ tells us there are many high-degree vertices <em>in expectation</em>. But we need
+    to show that at least one actually exists with high probability. There are several ways to make
+    this rigorous.</p>
+
+    <p><strong>Approach: Second moment method.</strong> We show P(X ≥ 1) ≥ E[X]²/E[X²] → 1
+    by bounding E[X²].</p>
+    <div class="math-block">X = Σ<sub>v</sub> 𝟙{deg(v) ≥ k}
+
+E[X²] = Σ<sub>v,w</sub> P(deg(v) ≥ k AND deg(w) ≥ k)</div>
+
+    <p>Split into diagonal and off-diagonal:</p>
+    <div class="math-block">E[X²] = Σ<sub>v</sub> P(deg(v) ≥ k) + Σ<sub>v≠w</sub> P(deg(v) ≥ k, deg(w) ≥ k)
+       = E[X] + Σ<sub>v≠w</sub> P(deg(v) ≥ k, deg(w) ≥ k)</div>
+
+    <p>For distinct vertices v and w, their degrees share at most one edge (the edge {v,w}).
+    Conditioning on whether this edge is present:</p>
+    <div class="math-block">P(deg(v) ≥ k, deg(w) ≥ k)
+
+= p · P(deg(v) ≥ k, deg(w) ≥ k | edge {v,w} present)
++ (1−p) · P(deg(v) ≥ k, deg(w) ≥ k | edge {v,w} absent)</div>
+
+    <p>Conditioned on the edge {v,w} status, the remaining edges incident to v and to w are
+    <strong>independent</strong> (they involve disjoint edge sets). So:</p>
+    <div class="math-block">≤ p · P(deg(v) ≥ k | edge present) · P(deg(w) ≥ k | edge present)
++ (1−p) · P(deg(v) ≥ k | edge absent) · P(deg(w) ≥ k | edge absent)
+
+≤ p · P(deg'(v) ≥ k−1) · P(deg'(w) ≥ k−1) + (1−p) · [P(deg(v) ≥ k)]²</div>
+
+    <p>where deg'(v) ~ Bin(n−2, p) denotes the degree from edges <em>other than</em> {v,w}.</p>
+
+    <div class="callout callout-intuition">
+      <div class="callout-label">INTUITION</div>
+      <p>The point: two vertex degrees are "almost independent" because they share at most one edge.
+      The correlation comes entirely from whether edge {v,w} exists. Conditioning on it makes
+      the remaining degrees independent.</p>
+      <p>In the sparse regime (p → 0), the correction from the shared edge is negligible:
+      knowing edge {v,w} exists raises each degree by 1, but we need degree ≥ k which is large,
+      so the effect is tiny.</p>
+    </div>
+
+    <p>For the dominant (1−p) term: (1−p) · [P(deg(v) ≥ k)]² ≤ [P(deg(v) ≥ k)]² = q² where q = P(deg(v) ≥ k).</p>
+
+    <p>For the p term: P(deg'(v) ≥ k−1) ≤ P(deg(v) ≥ k−1) ≤ (ed/(k−1))<sup>k−1</sup>.
+    Since k → ∞, this is at most (1 + o(1)) · (ed/k)<sup>k</sup> · (k/ed) = O(q · k).
+    So the p term contributes at most p · O(q·k)² = O(p k² q²).</p>
+
+    <p>Summing over all pairs:</p>
+    <div class="math-block">E[X²] ≤ E[X] + n² q² · (1 + O(pk²))
+       = E[X] + E[X]² · (1 + O(pk²))</div>
+
+    <p>Since p = d/(n−1) and k = O(log n / log log n):</p>
+    <div class="math-block">pk² = O(log²n / (n · log²log n)) → 0</div>
+
+    <p>Therefore E[X²] ≤ E[X] + E[X]² · (1 + o(1)), and:</p>
+    <div class="math-block">E[X]² / E[X²] ≥ E[X]² / (E[X] + E[X]²(1 + o(1)))
+               = 1 / (1/E[X] + 1 + o(1))
+               → 1     since E[X] → ∞</div>
+
+    <p>By Paley-Zygmund:</p>
+    <div class="math-block">P(Δ(G) ≥ k) = P(X ≥ 1) ≥ E[X]²/E[X²] → 1
+
+In particular, P(Δ(G) ≥ c log n / log log n) ≥ 0.99 for large n.     □</div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ Alternative approach: Poisson approximation</button>
+      <div class="toggle-content">
+        <p>In the sparse regime d = O(1), the degree sequence of G(n,p) converges to n independent
+        Poisson(d) variables (this is a theorem, proved rigorously via coupling). Under this
+        approximation:</p>
+        <div class="math-block">P(Δ < k) ≈ (1 − q)<sup>n</sup> ≤ exp(−nq)</div>
+        <p>When nq → ∞ (which happens for c < 1), this goes to 0. This avoids the second moment
+        computation entirely, but relies on the Poisson approximation theorem which is Week 11 material.
+        For this homework, the second moment approach is more self-contained.</p>
+      </div>
+    </div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ Wait — didn't you say this ISN'T a second moment problem?</button>
+      <div class="toggle-content">
+        <p>Good catch. In the setup, I said "this is not a second moment method problem" because
+        the <em>primary</em> structure is Chernoff + union bound (for the upper bound, which is the harder
+        and more instructive direction). The lower bound does use the second moment method, but in a
+        supporting role — it's verifying that E[X] → ∞ actually implies X > 0, rather than being the
+        main technique.</p>
+        <p>The distinction: in a "second moment method problem" (like proving triangles exist in G(n,p)
+        above threshold), the whole difficulty is in computing E[X²]. Here, the second moment
+        computation is almost trivial because the correlations are so weak (shared single edge).
+        The real work is in the Chernoff/Stirling estimates that determine the threshold.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============= COMBINE ============= -->
+  <div class="separator"></div>
+  <div class="part-header">
+    <h2>Combining Both Bounds</h2>
+    <div class="part-goal">Putting upper and lower together to get Θ.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">FINAL</span>
+      <span class="step-title">Conclusion</span>
+    </div>
+
+    <p>Choose C > 1 and c < 1 (both depending on d). For large enough n:</p>
+    <div class="math-block">P(Δ(G) > C log n / log log n)  ≤  0.005     (upper bound)
+P(Δ(G) < c log n / log log n)  ≤  0.005     (lower bound)
+
+By union bound:
+P(c log n/log log n ≤ Δ(G) ≤ C log n/log log n) ≥ 1 − 0.01 = 0.99
+
+∴  Δ(G) = Θ(log n / log log n)  with probability ≥ 0.99     □</div>
+  </div>
+
+
+  <!-- ============= CONTEXT BOXES ============= -->
+  <div class="separator"></div>
+
+  <div class="box">
+    <div class="box-label" style="color: #7eb8da;">PROOF AT A GLANCE</div>
+    <div class="proof-summary">
+      <div class="comment">// Key tail estimate</div>
+      <div>P(deg(v) ≥ k) ≈ (ed/k)<sup>k</sup>,     d = p(n−1) = O(1)</div>
+      <div>&nbsp;</div>
+      <div class="comment">// Upper bound: union bound</div>
+      <div>P(Δ ≥ k) ≤ n · (ed/k)<sup>k</sup></div>
+      <div>Set k = C log n / log log n, C > 1:</div>
+      <div>  k log(k/(ed)) ≈ C log n > log n  ✓</div>
+      <div>  → P(Δ ≥ k) ≤ n<sup>−(C−1)</sup> → 0</div>
+      <div>&nbsp;</div>
+      <div class="comment">// Lower bound: expected # high-degree vertices</div>
+      <div>E[#{deg(v) ≥ k}] = n · P(deg(v) ≥ k) = n<sup>1−c+o(1)</sup></div>
+      <div>Set k = c log n / log log n, c < 1:</div>
+      <div>  → E → ∞, second moment → P(Δ ≥ k) → 1</div>
+      <div>&nbsp;</div>
+      <div class="comment">// Combine</div>
+      <div>c log n/log log n ≤ Δ(G) ≤ C log n/log log n  whp     □</div>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="box-label" style="color: #d4a574;">WHY VALETTAS ASSIGNED THIS</div>
+
+    <p><strong>1. It synthesizes everything.</strong> Problem 1 gave you the tail-sum formula.
+    Problem 2 gave you Chernoff bounds. Problem 3 showed a direct application. Problem 4 requires
+    you to combine Chernoff with a union bound and Stirling-type estimates to solve a non-trivial
+    structural question about random graphs. This is the "final boss" of the problem set.</p>
+
+    <p><strong>2. The log n / log log n threshold is a benchmark.</strong> This specific scale appears
+    throughout probabilistic combinatorics — max load in balls-and-bins, height of random trees,
+    longest increasing subsequence variants. Whenever you see (const/k)<sup>k</sup> tails plus a
+    union bound over n objects, you get log n / log log n. Valettas wants this to become a reflex.</p>
+
+    <p><strong>3. Upper and lower bounds teach different skills.</strong> The upper bound is a clean
+    application of tools you already have (Chernoff + union bound). The lower bound forces you to
+    think about existence — how do you show something <em>must</em> happen, not just that it might?
+    This is the first/second moment method in action, connecting back to Week 5.</p>
+
+    <p><strong>4. The computation is the point.</strong> Unlike Problem 3 (which was conceptually rich
+    but computationally trivial), this problem forces you to get your hands dirty with logarithms
+    and asymptotics. Showing k log k ≈ C log n when k = C log n / log log n is a calculation
+    you need to be able to do fluently. It's messy, and that's intentional.</p>
+  </div>
+
+  <div class="box">
+    <div class="box-label" style="color: #a8d4a0;">CONNECTIONS AND CONTEXT</div>
+
+    <p><strong>→ Week 8 (Balls and Bins).</strong> The classical "birthday problem" variant:
+    throw n balls into n bins. The max load is Θ(log n / log log n). This is the <em>same problem</em>
+    in disguise — the number of balls in bin i is Binomial(n, 1/n) with mean 1, and the max over
+    all bins follows the same analysis. When you hit Week 11, you'll see this again.</p>
+
+    <p><strong>→ Week 10 (Chromatic number concentration).</strong> The chromatic number χ(G(n,p))
+    concentrates around its mean — but proving this requires martingale methods (Azuma/McDiarmid),
+    not Chernoff. The max degree Δ(G) gives a trivial upper bound χ(G) ≤ Δ(G) + 1, so this
+    problem tells you χ(G) ≤ O(log n / log log n) for free. The actual chromatic number is much
+    smaller (≈ n/(2 log n) for dense graphs), which shows this bound is very loose.</p>
+
+    <p><strong>→ The threshold hierarchy.</strong> Different tail behaviors give different thresholds
+    under union bounds over n events. Your intuition should be:</p>
+    <div class="math-block">Tail type         Threshold for max
+─────────────────────────────────────
+Gaussian:  exp(−ck²)     →  Θ(√(log n))
+Sub-exp:   (c/k)<sup>k</sup>        →  Θ(log n / log log n)   ← this problem
+Exponential: exp(−ck)    →  Θ(log n)
+Polynomial:  k<sup>−α</sup>        →  Θ(n<sup>1/α</sup>)</div>
+
+    <p>Each row says: if P(X ≥ k) has this tail decay, and you take the max of n independent copies,
+    the max lives at that threshold. The heavier the tail, the larger the max. This table is worth
+    memorizing — it tells you instantly what scale to expect whenever you see "max of n things."</p>
+  </div>
+
+  <div class="footer">
+    Hover <span style="color: #d4a574; border-bottom: 1px dashed #d4a574;">dotted terms</span> for definitions · click ▸ arrows for deeper context
+  </div>
+
+</div>
+
+<script>
+function toggleExpand(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.classList.contains('open');
+  content.classList.toggle('open');
+  btn.textContent = (isOpen ? '▸ ' : '▾ ') + btn.textContent.slice(2);
+}
+</script>
+</body>
+</html>

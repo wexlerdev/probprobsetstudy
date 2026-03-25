@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS4 Problem 3 — Boosting Randomized Algorithms</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,ital,wght@8..60,0,400;8..60,0,600;8..60,0,700;8..60,1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: #1a1612;
+    color: #c4b5a0;
+    font-family: 'Source Serif 4', Georgia, serif;
+    padding: 36px 20px 60px;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .container { max-width: 680px; margin: 0 auto; }
+
+  .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: #8a7e6e;
+    letter-spacing: 1.5px; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 28px; font-weight: 700; color: #f0e6d3;
+    line-height: 1.2; margin-bottom: 10px;
+  }
+  .subtitle {
+    font-size: 15px; color: #8a7e6e; font-style: italic; line-height: 1.6;
+  }
+
+  .math-block {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; color: #f0e6d3;
+    background: #221e1a; border-radius: 8px;
+    padding: 14px 18px; margin: 14px 0;
+    line-height: 1.9; border: 1px solid #2e2924;
+    overflow-x: auto; white-space: pre-wrap;
+  }
+  .math-inline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: #f0e6d3;
+    background: #252019; padding: 1px 5px; border-radius: 3px;
+  }
+
+  .part-header {
+    margin: 44px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #d4a574;
+  }
+  .part-header h2 {
+    font-size: 22px; font-weight: 700; color: #f0e6d3; margin: 0;
+  }
+  .part-header .part-goal {
+    font-size: 14px; color: #8a7e6e; margin-top: 6px;
+    font-style: italic; line-height: 1.6;
+  }
+
+  .step {
+    margin-bottom: 32px; padding-bottom: 28px;
+    border-bottom: 1px solid #2a2520;
+  }
+  .step:last-of-type { border-bottom: none; }
+  .step-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .step-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: #1a1612; background: #d4a574; border-radius: 4px;
+    padding: 2px 8px; font-weight: 600; flex-shrink: 0;
+  }
+  .step-title {
+    font-family: 'Source Serif 4', serif; font-size: 18px;
+    color: #f0e6d3; font-weight: 600;
+  }
+  .step p { margin-top: 12px; }
+  .step p:first-child { margin-top: 0; }
+
+  .callout {
+    border-radius: 0 8px 8px 0; padding: 12px 16px;
+    margin: 14px 0; font-size: 14px; line-height: 1.7;
+  }
+  .callout p { margin-top: 8px; }
+  .callout p:first-of-type { margin-top: 0; }
+  .callout-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 1px; margin-bottom: 4px;
+  }
+  .callout-intuition { border-left: 3px solid #7eb8da; background: #1a2228; }
+  .callout-intuition .callout-label { color: #7eb8da; }
+  .callout-warning { border-left: 3px solid #f25c54; background: #281a1a; }
+  .callout-warning .callout-label { color: #f25c54; }
+  .callout-key { border-left: 3px solid #d4a574; background: #28221a; }
+  .callout-key .callout-label { color: #d4a574; }
+  .callout-connection { border-left: 3px solid #a8d4a0; background: #1a2518; }
+  .callout-connection .callout-label { color: #a8d4a0; }
+
+  .toggle {
+    margin: 10px 0; border-left: 2px solid #3a3530; padding-left: 16px;
+  }
+  .toggle-btn {
+    background: none; border: none; color: #d4a574; cursor: pointer;
+    font-family: 'Source Serif 4', serif; font-size: 14px; padding: 0;
+    font-style: italic; opacity: 0.9; text-align: left;
+  }
+  .toggle-btn:hover { opacity: 1; }
+  .toggle-content {
+    display: none; margin-top: 8px; color: #a89880;
+    font-size: 14px; line-height: 1.7;
+  }
+  .toggle-content.open { display: block; }
+  .toggle-content .math-block { font-size: 13px; }
+
+  .term {
+    color: #d4a574; border-bottom: 1px dashed #d4a574;
+    cursor: help; position: relative; display: inline;
+  }
+  .term-tooltip {
+    display: none; position: absolute;
+    bottom: calc(100% + 6px); left: 0; z-index: 10;
+    background: #2e2924; border: 1px solid #3a3530; border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; color: #c4b5a0; width: 300px;
+    line-height: 1.5; font-style: normal; font-weight: 400;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    white-space: normal;
+  }
+  .term:hover .term-tooltip { display: block; }
+
+  .box {
+    background: #221e1a; border-radius: 10px;
+    padding: 24px; border: 1px solid #2e2924; margin-top: 28px;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 1.5px; margin-bottom: 12px;
+  }
+  .box p { margin-bottom: 14px; }
+  .box p:last-child { margin-bottom: 0; }
+
+  strong { color: #f0e6d3; }
+  em { font-style: italic; }
+
+  .separator {
+    height: 1px; background: linear-gradient(to right, transparent, #3a3530, transparent);
+    margin: 40px 0;
+  }
+
+  .footer {
+    margin-top: 36px; font-size: 12px; color: #5a5245;
+    text-align: center; font-style: italic;
+  }
+
+  .proof-summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: #c4b5a0; line-height: 2.2;
+  }
+  .proof-summary .comment { color: #8a7e6e; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="label">PROBLEM SET 4 · PROBLEM 3</div>
+  <h1>Boosting Randomized Algorithms</h1>
+  <p class="subtitle">
+    You have an algorithm that's barely better than a coin flip. Run it many times, take majority vote,
+    and the error probability drops exponentially. How many runs do you need?
+  </p>
+
+  <!-- ============= SETUP ============= -->
+  <div class="part-header">
+    <h2>Setup — The Model</h2>
+    <div class="part-goal">Understanding exactly what we have, what we want, and how to translate it into the language of Problem 2.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">SETUP</span>
+      <span class="step-title">What we have</span>
+    </div>
+
+    <p>We have a randomized algorithm for a
+      <span class="term">decision problem<span class="term-tooltip">A problem with a YES/NO answer. Examples: "Is this number prime?", "Does this graph have a Hamiltonian cycle?", "Is this string in the language L?" The algorithm outputs one bit: correct or incorrect.</span></span>.
+      On any input, it returns the correct answer with probability 1/2 + δ for some fixed δ > 0.
+    </p>
+
+    <div class="callout callout-key">
+      <div class="callout-label">KEY IDEA</div>
+      <p>The parameter δ is the <em>advantage</em> over random guessing. A fair coin gives you 1/2.
+      This algorithm gives you 1/2 + δ — it's only a <em>little</em> better than useless.
+      The question is: can you amplify a tiny advantage into an arbitrarily reliable algorithm?</p>
+      <p>The answer is yes, and the cost is O(δ⁻² log(1/ε)) repetitions. This is one of the
+      foundational results in
+        <span class="term">complexity theory (BPP)<span class="term-tooltip">BPP = Bounded-error Probabilistic Polynomial time. The class of decision problems solvable by a randomized algorithm that runs in polynomial time and has error probability ≤ 1/3 (or any constant < 1/2). Boosting shows the choice of 1/3 doesn't matter — any constant < 1/2 gives the same class, since you can amplify to any desired error ε with only O(log(1/ε)) overhead.</span></span>.
+      </p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">SETUP</span>
+      <span class="step-title">What we do</span>
+    </div>
+
+    <p>Run the algorithm N times independently on the same input. Let Y<sub>i</sub> be the indicator
+    that the i-th run gives the correct answer. Then:</p>
+    <div class="math-block">Y₁, Y₂, …, Y_N  are i.i.d. Bernoulli(1/2 + δ)
+
+S_N = Y₁ + Y₂ + ⋯ + Y_N  =  number of correct answers</div>
+
+    <p>We take the
+      <span class="term">majority vote<span class="term-tooltip">Output "correct" if more than half the runs agree, i.e., if S_N > N/2. If exactly N/2 agree (N even), break ties arbitrarily — this doesn't affect the asymptotic analysis.</span></span>:
+      output the answer that the majority of the N runs agree on.
+    </p>
+
+    <p>The majority vote is <strong>wrong</strong> when fewer than half the runs are correct:</p>
+    <div class="math-block">P(majority wrong) = P(S_N ≤ N/2)</div>
+
+    <div class="callout callout-intuition">
+      <div class="callout-label">INTUITION</div>
+      <p>Each run is a slightly biased coin — heads (correct) with probability 1/2 + δ.
+      The majority vote is wrong when the coin comes up tails more than half the time,
+      <em>despite</em> being biased toward heads. We need to bound the probability that
+      a Binomial(N, 1/2 + δ) variable falls below N/2.</p>
+      <p>This is exactly a deviation from the mean — and that's exactly what Chernoff/Hoeffding controls.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">SETUP</span>
+      <span class="step-title">What we want</span>
+    </div>
+
+    <p>We want the majority vote to be correct with probability at least 1 − ε. Equivalently:</p>
+    <div class="math-block">P(majority wrong) = P(S_N ≤ N/2) ≤ ε</div>
+
+    <p>We need to find how large N must be (as a function of δ and ε) to guarantee this.</p>
+
+    <p>The problem asks us to show: <span class="math-inline">N = Ω(δ⁻² log(1/ε))</span> suffices.</p>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ What does Ω(·) mean here?</button>
+      <div class="toggle-content">
+        <p><span class="math-inline">N = Ω(f(δ, ε))</span> means there exists a constant C > 0 such that
+        N ≥ C · f(δ, ε) is sufficient. We don't care about the exact constant — we care about
+        the scaling: N scales like 1/δ² in the advantage and like log(1/ε) in the target error.
+        The log(1/ε) scaling is remarkable — to go from ε = 0.1 to ε = 0.001, you only need
+        to roughly triple N, not multiply by 100.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============= THE TRANSLATION ============= -->
+  <div class="separator"></div>
+  <div class="part-header">
+    <h2>The Translation — Connecting to Problem 2</h2>
+    <div class="part-goal">Rewriting the boosting question in the exact language of Hoeffding's inequality.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">1</span>
+      <span class="step-title">Identify the parameters</span>
+    </div>
+
+    <p>Let's match notation with Problem 2. We have:</p>
+    <div class="math-block">S_N = Y₁ + ⋯ + Y_N,     Yᵢ ~ Bernoulli(p),     p = 1/2 + δ
+
+E[S_N] = Np = N(1/2 + δ)</div>
+
+    <p>The majority vote is wrong when S_N ≤ N/2, which we rewrite as a <em>downward</em> deviation from the mean:</p>
+    <div class="math-block">S_N ≤ N/2
+⟺  S_N − E[S_N] ≤ N/2 − N(1/2 + δ)
+⟺  S_N − E[S_N] ≤ −Nδ
+⟺  S_N − E[S_N] < −δN</div>
+
+    <div class="callout callout-key">
+      <div class="callout-label">KEY IDEA</div>
+      <p>The majority fails when S_N drops below N/2. Since E[S_N] = N/2 + Nδ, this means
+      S_N must deviate <em>downward</em> from its mean by at least Nδ. The advantage δ sets
+      the "gap" between the mean and the failure threshold.</p>
+      <p>In the notation of Problem 2(b): we need the deviation to exceed εN where ε = δ.</p>
+    </div>
+  </div>
+
+
+  <!-- ============= THE PROOF ============= -->
+  <div class="separator"></div>
+  <div class="part-header">
+    <h2>The Proof</h2>
+    <div class="part-goal">Apply Hoeffding, then solve for N.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">2</span>
+      <span class="step-title">Apply Hoeffding's inequality</span>
+    </div>
+
+    <p>From Problem 2(b), for any ε > 0 and a sum of N independent Bernoulli(p) variables:</p>
+    <div class="math-block">P(|S_N − E[S_N]| > εN) ≤ 2 exp(−2ε²N)</div>
+
+    <p>We only need the <strong>one-sided lower tail</strong>. Since P(S_N − E[S_N] < −εN) ≤ P(|S_N − E[S_N]| > εN),
+    we have the cleaner bound:</p>
+    <div class="math-block">P(S_N − E[S_N] < −εN) ≤ exp(−2ε²N)</div>
+
+    <p>Setting ε = δ (the advantage is the deviation we need to survive):</p>
+    <div class="math-block">P(majority wrong) = P(S_N − E[S_N] < −δN) ≤ exp(−2δ²N)</div>
+
+    <div class="callout callout-intuition">
+      <div class="callout-label">INTUITION</div>
+      <p>The error probability decays <em>exponentially</em> in N. Each additional run of the
+      algorithm multiplies the error probability by a constant factor exp(−2δ²) < 1.
+      This is why boosting is so powerful — linear investment in repetitions buys exponential
+      improvement in reliability.</p>
+    </div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ Why use the one-sided bound instead of the two-sided 2·exp(−2ε²N)?</button>
+      <div class="toggle-content">
+        <p>The factor of 2 in Hoeffding accounts for <em>both</em> tails — the probability of
+        being too high or too low. But the majority vote only fails when S_N is too <em>low</em>.
+        We don't care if S_N is larger than expected (that just means more correct answers).</p>
+        <p>Dropping the factor of 2 gives a slightly tighter bound. Some presentations keep it
+        and absorb the constant into the Ω(·) — either works for the asymptotic result.
+        You can also use the one-sided Hoeffding directly: for the lower tail,
+        P(S_N − E[S_N] < −εN) ≤ exp(−2ε²N) without the factor of 2.</p>
+      </div>
+    </div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ Could we use Okamoto instead for a tighter bound?</button>
+      <div class="toggle-content">
+        <p>Yes! Since p = 1/2 + δ ≥ 1/2, Okamoto's part (ii) doesn't directly apply to the lower tail.
+        But if δ is small, p ≈ 1/2, and p(1−p) ≈ 1/4, so Okamoto and Hoeffding nearly agree anyway.</p>
+        <p>For the problem's purposes, Hoeffding is cleaner and sufficient. The Ω(·) notation
+        absorbs constant factors, so the sharper Okamoto bound wouldn't change the asymptotic answer.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">3</span>
+      <span class="step-title">Solve for N</span>
+    </div>
+
+    <p>We want <span class="math-inline">P(majority wrong) ≤ ε</span>. It suffices to have:</p>
+    <div class="math-block">exp(−2δ²N) ≤ ε</div>
+
+    <p>Take the natural log of both sides (log is monotone increasing, inequality preserved):</p>
+    <div class="math-block">−2δ²N ≤ log(ε)
+ 2δ²N ≥ log(1/ε)        (multiply by −1, flip inequality)
+     N ≥ log(1/ε) / (2δ²)</div>
+
+    <p>Therefore:</p>
+    <div class="math-block">N ≥ (1/(2δ²)) · log(1/ε)     suffices.
+
+Equivalently:  N = Ω(δ⁻² log(1/ε))     □</div>
+
+    <div class="callout callout-key">
+      <div class="callout-label">KEY IDEA</div>
+      <p>The constant in the Ω is 1/(2δ²) from our application of Hoeffding. A different
+      concentration inequality would give a different constant but the same scaling.
+      The two things that matter:</p>
+      <p><strong>1/δ² scaling:</strong> If your advantage halves (δ → δ/2), you need 4× as many runs.
+      This is because the standard deviation of S_N scales like √N, so you need the mean gap
+      δN to be a constant number of standard deviations away, which requires N ∝ 1/δ².</p>
+      <p><strong>log(1/ε) scaling:</strong> Going from 99% confidence to 99.99% confidence only
+      doubles N (roughly). Exponential tails make boosting cheap.</p>
+    </div>
+  </div>
+
+
+  <!-- ============= UNPACKING THE SCALING ============= -->
+  <div class="separator"></div>
+  <div class="part-header">
+    <h2>Unpacking the Scaling</h2>
+    <div class="part-goal">Why δ⁻² and not δ⁻¹? Why log(1/ε) and not 1/ε? Building the right intuition.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">4</span>
+      <span class="step-title">Why 1/δ² — the signal-to-noise argument</span>
+    </div>
+
+    <p>Here's the deeper reason the scaling is quadratic in 1/δ, not linear.</p>
+
+    <p>After N runs, we have:</p>
+    <div class="math-block">E[S_N] = N(1/2 + δ)         ← the "signal": mean is above N/2 by Nδ
+ Std(S_N) = √(Np(1−p)) ≈ √(N/4) = √N/2    ← the "noise": fluctuation scale</div>
+
+    <p>The majority vote fails when noise overwhelms signal:</p>
+    <div class="math-block">We need:  signal ≫ noise
+           Nδ ≫ √N/2
+           √N ≫ 1/(2δ)
+           N ≫ 1/(4δ²)</div>
+
+    <p>This is a
+      <span class="term">signal-to-noise ratio<span class="term-tooltip">SNR = signal / noise = Nδ / (√N/2) = 2δ√N. The majority vote succeeds reliably when SNR is large. Setting SNR ≥ c for some constant c gives N ≥ c²/(4δ²). The SNR grows like √N because the mean grows linearly but the standard deviation grows like √N — the mean wins eventually.</span></span>
+      argument. The mean (signal) grows like N while the standard deviation (noise) grows like √N.
+      The signal-to-noise ratio is Nδ / √N = δ√N, which grows with N — but you need it to be
+      large enough, and that requires N ∝ 1/δ².
+    </p>
+
+    <div class="callout callout-intuition">
+      <div class="callout-label">INTUITION</div>
+      <p>Think of it physically. You're trying to detect a tiny bias δ in a coin by flipping it N times.
+      The expected fraction of heads is 1/2 + δ, but the observed fraction fluctuates with
+      standard deviation ≈ 1/(2√N). To reliably distinguish "biased" from "fair," you need
+      the bias δ to be much larger than the fluctuation 1/√N. That gives N ≫ 1/δ².</p>
+      <p>This is the same scaling that appears everywhere in statistics: sample sizes scale like
+      1/(effect size)². Halving the effect you want to detect costs 4× the samples.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header">
+      <span class="step-badge">5</span>
+      <span class="step-title">Why log(1/ε) — the power of exponential tails</span>
+    </div>
+
+    <p>Compare what you'd get from Chebyshev vs. Hoeffding:</p>
+    <div class="math-block">Chebyshev:  P(error) ≤ Var(S_N) / (Nδ)² = p(1−p)/(Nδ²) ≈ 1/(4Nδ²)
+  → To get P(error) ≤ ε: need N = Ω(1/(εδ²))
+  → Scaling in ε: 1/ε  (polynomial)
+
+Hoeffding:  P(error) ≤ exp(−2δ²N)
+  → To get P(error) ≤ ε: need N = Ω(log(1/ε)/δ²)
+  → Scaling in ε: log(1/ε)  (logarithmic)</div>
+
+    <div class="callout callout-key">
+      <div class="callout-label">KEY IDEA</div>
+      <p>Chebyshev would require N = O(1/(εδ²)) — if you want ε = 10⁻⁶, you need a million
+      times more runs than for ε = 1. Hoeffding only needs N = O(log(10⁶)/δ²) ≈ 14/δ²
+      additional runs.</p>
+      <p>This is the whole reason Chernoff/Hoeffding bounds exist. Polynomial tail bounds (Chebyshev)
+      give polynomial sample complexity. Exponential tail bounds (Hoeffding) give logarithmic
+      sample complexity. The exponential tilt from Problem 2 is what buys this.</p>
+    </div>
+
+    <div class="toggle">
+      <button class="toggle-btn" onclick="toggleExpand(this)">▸ Concrete numbers to feel the difference</button>
+      <div class="toggle-content">
+        <p>Suppose δ = 0.05 (algorithm is 55% correct) and we want ε = 0.001 (99.9% reliable).</p>
+        <div class="math-block">Hoeffding:  N ≥ log(1000) / (2 · 0.05²)
+            = 6.91 / 0.005
+            ≈ 1382 runs
+
+Chebyshev:  N ≥ 1 / (4 · 0.001 · 0.05²)
+            = 1 / 0.00001
+            = 100,000 runs</div>
+        <p>Hoeffding needs ~1400 runs. Chebyshev needs ~100,000. That's a 70× difference,
+        and it only gets worse as ε shrinks.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============= CONTEXT ============= -->
+  <div class="separator"></div>
+
+  <div class="box">
+    <div class="box-label" style="color: #7eb8da;">PROOF AT A GLANCE</div>
+    <div class="proof-summary">
+      <div class="comment">// Model</div>
+      <div>Yᵢ ~ Bernoulli(1/2 + δ),  S_N = ΣYᵢ</div>
+      <div>&nbsp;</div>
+      <div class="comment">// Majority wrong ⟺ downward deviation of δN</div>
+      <div>P(wrong) = P(S_N ≤ N/2) = P(S_N − E[S_N] ≤ −δN)</div>
+      <div>&nbsp;</div>
+      <div class="comment">// Apply Hoeffding (Problem 2b) with ε = δ</div>
+      <div>≤ exp(−2δ²N)</div>
+      <div>&nbsp;</div>
+      <div class="comment">// Set ≤ ε, solve for N</div>
+      <div>exp(−2δ²N) ≤ ε  ⟹  N ≥ log(1/ε) / (2δ²)</div>
+      <div>&nbsp;</div>
+      <div>∴  N = Ω(δ⁻² log(1/ε))     □</div>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="box-label" style="color: #d4a574;">WHY VALETTAS ASSIGNED THIS</div>
+
+    <p><strong>1. It's the payoff for Problem 2.</strong> You just spent pages deriving Hoeffding's
+    inequality — this problem shows you what it's <em>for</em>. The abstract bound exp(−2ε²n)
+    directly translates into a concrete algorithmic guarantee. Theory → application in one step.</p>
+
+    <p><strong>2. The scaling is the lesson, not the proof.</strong> The proof itself is three lines
+    (apply Hoeffding, take logs, solve). The insight is understanding <em>why</em> the answer is
+    δ⁻² log(1/ε) and not something else. The 1/δ² comes from signal-to-noise (fundamental, unavoidable).
+    The log(1/ε) comes from exponential tails (the reward for using Hoeffding instead of Chebyshev).</p>
+
+    <p><strong>3. It connects to Week 2.</strong> Remember the amplification trick from PIT
+    (Polynomial Identity Testing) early in the course? That was the same idea: run a randomized
+    test multiple times to boost confidence. Now you have the precise quantitative statement of
+    how that boosting works.</p>
+
+    <p><strong>4. It's a BPP theorem.</strong> This result implies that the complexity class BPP is robust:
+    any error probability < 1/2 can be amplified to any desired ε with only O(log(1/ε)) overhead.
+    The definition of BPP uses error probability 1/3, but it wouldn't change if you used 0.499 or 0.01 —
+    boosting makes them all equivalent up to polynomial factors.</p>
+  </div>
+
+  <div class="box">
+    <div class="box-label" style="color: #a8d4a0;">CONNECTIONS</div>
+
+    <p><strong>→ Problem 2(b).</strong> This is a direct application. The entire proof is
+    "substitute into Hoeffding." If you can prove Hoeffding, you can prove boosting.</p>
+
+    <p><strong>→ Problem 4 (Max degree).</strong> Both problems use Chernoff-type bounds, but in different ways.
+    Boosting bounds a <em>single</em> sum's deviation. Problem 4 bounds the <em>maximum</em> of n sums
+    using a union bound — you'll need P(any vertex exceeds degree k) ≤ Σ P(vertex v exceeds k) ≤ n · (Chernoff bound).
+    That's why Problem 4 gets log n in the answer: the union bound over n vertices costs a factor of n in
+    the probability, which translates to log n in the threshold.</p>
+
+    <p><strong>→ Week 8 (Derandomization).</strong> Boosting is one half of the randomness story.
+    The other half: can you <em>remove</em> the randomness entirely? The conditional expectation method
+    (Week 9) shows that if a random algorithm achieves something in expectation, a deterministic
+    algorithm can match it. Boosting + derandomization together say: randomness is a tool, not a necessity.</p>
+
+    <p><strong>→ Week 15 (Statistical learning).</strong> The same 1/δ² log(1/ε) scaling shows up
+    in sample complexity bounds for learning. To learn a concept to accuracy 1−ε with advantage δ
+    over random guessing, you need O(δ⁻² log(1/ε)) samples. Same math, different interpretation.</p>
+  </div>
+
+  <div class="footer">
+    Hover <span style="color: #d4a574; border-bottom: 1px dashed #d4a574;">dotted terms</span> for definitions · click ▸ arrows for deeper context
+  </div>
+
+</div>
+
+<script>
+function toggleExpand(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.classList.contains('open');
+  content.classList.toggle('open');
+  btn.textContent = (isOpen ? '▸ ' : '▾ ') + btn.textContent.slice(2);
+}
+</script>
+</body>
+</html>
