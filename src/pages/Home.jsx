@@ -1,34 +1,74 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-const problems = [
-  {
-    num: 1,
-    title: 'Tail Sum Formula for Expectation',
-    route: '/problem-1',
-    subtitle:
-      'Proving that for a non-negative random variable Y on a finite probability space: E[Y] = \u222B\u2080\u221E P(Y \u2265 t) dt',
-  },
-  {
-    num: 2,
-    title: "Chernoff's Inequality Revisited",
-    route: '/problem-2',
-    subtitle:
-      'From the exact rate function to Hoeffding to Okamoto \u2014 three levels of precision for controlling the tail of a sum of independent Bernoulli trials.',
-  },
-  {
-    num: 3,
-    title: 'Boosting Randomized Algorithms',
-    route: '/problem-3',
-    subtitle:
-      'You have an algorithm that\u2019s barely better than a coin flip. Run it many times, take majority vote, and the error probability drops exponentially.',
-  },
+const units = [
   {
     num: 4,
-    title: 'Maximal Degree on Random Graphs',
-    route: '/problem-4',
-    subtitle:
-      'In a sparse Erd\u0151s\u2013R\u00e9nyi graph with constant expected degree, the maximum degree is \u0398(log n / log log n) with high probability.',
+    label: 'UNIT 4',
+    problems: [
+      {
+        num: 1,
+        title: 'Tail Sum Formula for Expectation',
+        route: '/unit-4/problem-1',
+        subtitle:
+          'Proving that for a non-negative random variable Y on a finite probability space: E[Y] = \u222B\u2080\u221E P(Y \u2265 t) dt',
+      },
+      {
+        num: 2,
+        title: "Chernoff's Inequality Revisited",
+        route: '/unit-4/problem-2',
+        subtitle:
+          'From the exact rate function to Hoeffding to Okamoto \u2014 three levels of precision for controlling the tail of a sum of independent Bernoulli trials.',
+      },
+      {
+        num: 3,
+        title: 'Boosting Randomized Algorithms',
+        route: '/unit-4/problem-3',
+        subtitle:
+          'You have an algorithm that\u2019s barely better than a coin flip. Run it many times, take majority vote, and the error probability drops exponentially.',
+      },
+      {
+        num: 4,
+        title: 'Maximal Degree on Random Graphs',
+        route: '/unit-4/problem-4',
+        subtitle:
+          'In a sparse Erd\u0151s\u2013R\u00e9nyi graph with constant expected degree, the maximum degree is \u0398(log n / log log n) with high probability.',
+      },
+    ],
+  },
+  {
+    num: 5,
+    label: 'UNIT 5',
+    problems: [
+      {
+        num: 1,
+        title: 'Probabilistic Method: 0\u20131 Matrices',
+        route: '/unit-5/problem-1',
+        subtitle:
+          'Use random matrices and anti-concentration to prove the existence of a 0\u20131 matrix where every sign vector produces a large entry.',
+      },
+      {
+        num: 2,
+        title: 'Moment & MGF Bounds',
+        route: '/unit-5/problem-2',
+        subtitle:
+          'Taylor truncation gives an upper bound via moments; the Gaussian integral trick turns sub-Gaussian tails into sub-exponential control of \u03BE\u00B2.',
+      },
+      {
+        num: 3,
+        title: 'Dimension Reduction Limits',
+        route: '/unit-5/problem-3',
+        subtitle:
+          'Isometric embeddings of N points need N dimensions. Allow factor-2 distortion and log N suffices \u2014 a volumetric packing argument.',
+      },
+      {
+        num: 4,
+        title: 'Dependent Variables: Lower Bound on P(S\u2099 > 0)',
+        route: '/unit-5/problem-4',
+        subtitle:
+          'The 1/S\u2099 trick plus Jensen\u2019s inequality gives a lower bound on the probability that a sum of (possibly dependent) 0\u20131 variables is positive.',
+      },
+    ],
   },
 ]
 
@@ -44,7 +84,7 @@ export default function Home() {
           display: flex;
           flex-direction: column;
           gap: 16px;
-          margin-top: 32px;
+          margin-top: 16px;
         }
         .home-card {
           display: block;
@@ -81,6 +121,19 @@ export default function Home() {
           line-height: 1.6;
           font-style: italic;
         }
+        .unit-heading {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 12px;
+          color: #d4a574;
+          letter-spacing: 2px;
+          margin-top: 40px;
+          margin-bottom: 4px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid #2e2924;
+        }
+        .unit-heading:first-of-type {
+          margin-top: 32px;
+        }
       `}</style>
 
       <div className="container">
@@ -91,15 +144,20 @@ export default function Home() {
           the formal details worked out in full.
         </p>
 
-        <div className="home-cards">
-          {problems.map((p) => (
-            <Link key={p.num} to={p.route} className="home-card">
-              <div className="home-card-num">PROBLEM {p.num}</div>
-              <div className="home-card-title">{p.title}</div>
-              <div className="home-card-subtitle">{p.subtitle}</div>
-            </Link>
-          ))}
-        </div>
+        {units.map((unit) => (
+          <div key={unit.num}>
+            <div className="unit-heading">{unit.label}</div>
+            <div className="home-cards">
+              {unit.problems.map((p) => (
+                <Link key={p.route} to={p.route} className="home-card">
+                  <div className="home-card-num">PROBLEM {p.num}</div>
+                  <div className="home-card-title">{p.title}</div>
+                  <div className="home-card-subtitle">{p.subtitle}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </>
   )

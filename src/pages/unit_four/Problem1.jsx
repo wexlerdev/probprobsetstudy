@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import Toggle from '../components/Toggle';
-import Term from '../components/Term';
-import Callout from '../components/Callout';
-import Step from '../components/Step';
-import MathBlock from '../components/MathBlock';
-import Box from '../components/Box';
+import Toggle from '../../components/Toggle';
+import Term from '../../components/Term';
+import Callout from '../../components/Callout';
+import Step from '../../components/Step';
+import MathBlock from '../../components/MathBlock';
+import Box from '../../components/Box';
+import BottomNav from '../../components/BottomNav';
 
 export default function Problem1() {
   useEffect(() => {
@@ -196,6 +197,8 @@ export default function Problem1() {
             <div>= ∫₀<sup>∞</sup> P(Y ≥ t) dt</div>
           </div>
         </Box>
+
+        <BottomNav />
 
         <div className="footer">
           Hover dotted terms for definitions · click arrows for deeper context

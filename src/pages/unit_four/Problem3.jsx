@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
-import Toggle from '../components/Toggle'
-import Term from '../components/Term'
-import Callout from '../components/Callout'
-import Step from '../components/Step'
-import MathBlock from '../components/MathBlock'
-import Box from '../components/Box'
-import Footer from '../components/Footer'
+import Toggle from '../../components/Toggle'
+import Term from '../../components/Term'
+import Callout from '../../components/Callout'
+import Step from '../../components/Step'
+import MathBlock from '../../components/MathBlock'
+import Box from '../../components/Box'
+import Footer from '../../components/Footer'
+import BottomNav from '../../components/BottomNav'
 
 export default function Problem3() {
   useEffect(() => {
@@ -319,6 +320,7 @@ Chebyshev:  N ≥ 1 / (4 · 0.001 · 0.05²)
         over random guessing, you need O(δ⁻² log(1/ε)) samples. Same math, different interpretation.</p>
       </Box>
 
+      <BottomNav />
       <Footer />
 
     </div>

@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
-import Toggle from '../components/Toggle'
-import Term from '../components/Term'
-import Callout from '../components/Callout'
-import Step from '../components/Step'
-import MathBlock from '../components/MathBlock'
-import Box from '../components/Box'
-import Footer from '../components/Footer'
+import Toggle from '../../components/Toggle'
+import Term from '../../components/Term'
+import Callout from '../../components/Callout'
+import Step from '../../components/Step'
+import MathBlock from '../../components/MathBlock'
+import Box from '../../components/Box'
+import Footer from '../../components/Footer'
+import BottomNav from '../../components/BottomNav'
 
 export default function Problem4() {
   useEffect(() => {
@@ -368,6 +369,7 @@ export default function Problem4() {
         memorizing — it tells you instantly what scale to expect whenever you see "max of n things."</p>
       </Box>
 
+      <BottomNav />
       <Footer />
 
     </div>
