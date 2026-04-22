@@ -88,6 +88,13 @@ const units = [
         subtitle:
           'Compute B on two concrete inputs, bound it linearly by total mass, then use McDiarmid\u2019s bounded-differences inequality to prove exponential concentration of B\u2099 around its mean.',
       },
+      {
+        num: 3,
+        title: 'Discrepancy via the Lov\u00e1sz Local Lemma',
+        route: '/unit-6/problem-3',
+        subtitle:
+          'For an m-uniform set system where each point lies in at most t sets, find a \u00b11 coloring with discrepancy O(\u221a(m log(mt))). The union bound is too weak; LLL is the right hammer.',
+      },
     ],
   },
 ]
