@@ -70,6 +70,19 @@ const units = [
       },
     ],
   },
+  {
+    num: 6,
+    label: 'UNIT 6',
+    problems: [
+      {
+        num: 1,
+        title: 'Martingale Increments',
+        route: '/unit-6/problem-1',
+        subtitle:
+          'Square-integrable martingale differences are pairwise uncorrelated, their squared means sum to the total variance V, and at least one obeys a Chebyshev-style tail bound V/(nt\u00b2).',
+      },
+    ],
+  },
 ]
 
 export default function Home() {

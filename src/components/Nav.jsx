@@ -21,6 +21,13 @@ const units = [
       { num: 4, title: 'Dependent R.V. Inequality', path: '/unit-5/problem-4' },
     ],
   },
+  {
+    num: 6,
+    label: 'Unit 6',
+    problems: [
+      { num: 1, title: 'Martingale Increments', path: '/unit-6/problem-1' },
+    ],
+  },
 ]
 
 export default function Nav() {
