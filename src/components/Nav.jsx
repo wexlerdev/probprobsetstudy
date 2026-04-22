@@ -26,6 +26,7 @@ const units = [
     label: 'Unit 6',
     problems: [
       { num: 1, title: 'Martingale Increments', path: '/unit-6/problem-1' },
+      { num: 2, title: 'Bin Packing Concentration', path: '/unit-6/problem-2' },
     ],
   },
 ]

@@ -81,6 +81,13 @@ const units = [
         subtitle:
           'Square-integrable martingale differences are pairwise uncorrelated, their squared means sum to the total variance V, and at least one obeys a Chebyshev-style tail bound V/(nt\u00b2).',
       },
+      {
+        num: 2,
+        title: 'Bin Packing: Bounds and Concentration',
+        route: '/unit-6/problem-2',
+        subtitle:
+          'Compute B on two concrete inputs, bound it linearly by total mass, then use McDiarmid\u2019s bounded-differences inequality to prove exponential concentration of B\u2099 around its mean.',
+      },
     ],
   },
 ]
