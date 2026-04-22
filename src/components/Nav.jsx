@@ -28,6 +28,7 @@ const units = [
       { num: 1, title: 'Martingale Increments', path: '/unit-6/problem-1' },
       { num: 2, title: 'Bin Packing Concentration', path: '/unit-6/problem-2' },
       { num: 3, title: 'Discrepancy via LLL', path: '/unit-6/problem-3' },
+      { num: 4, title: 'Harris / FKG Inequality', path: '/unit-6/problem-4' },
     ],
   },
 ]

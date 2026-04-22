@@ -95,6 +95,13 @@ const units = [
         subtitle:
           'For an m-uniform set system where each point lies in at most t sets, find a \u00b11 coloring with discrepancy O(\u221a(m log(mt))). The union bound is too weak; LLL is the right hammer.',
       },
+      {
+        num: 4,
+        title: 'Harris / FKG Correlation Inequality',
+        route: '/unit-6/problem-4',
+        subtitle:
+          'Monotone functions of a random input are positively correlated \u2014 (a) single variable via the two-copies trick, (b) n independent variables via induction, (c) product of m nonneg monotone functions.',
+      },
     ],
   },
 ]
