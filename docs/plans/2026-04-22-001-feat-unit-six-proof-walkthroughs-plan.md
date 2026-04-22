@@ -1,7 +1,7 @@
 ---
 title: "feat: Unit 6 proof walkthroughs (PS6 — martingales, bin packing, LLL, FKG)"
 type: feat
-status: active
+status: completed
 date: 2026-04-22
 origin: docs/brainstorms/unit5-three-pass-requirements.md
 ---
