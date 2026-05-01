@@ -10,8 +10,8 @@ body {
   font-size: 15px;
 }
 
-.container { max-width: 680px; margin: 0 auto; }
-.container-narrow { max-width: 660px; }
+.container { max-width: 1040px; margin: 0 auto; }
+.container-narrow { max-width: 1000px; }
 
 /* Header */
 .label {
