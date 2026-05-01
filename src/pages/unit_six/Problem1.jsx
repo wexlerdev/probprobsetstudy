@@ -7,11 +7,60 @@ import Step from '../../components/Step'
 import MathBlock from '../../components/MathBlock'
 import Box from '../../components/Box'
 import Footer from '../../components/Footer'
+import Tex from '../../components/Tex'
+import { useDifficulty, MODES } from '../../components/DifficultyContext'
+
+const PROOF_MODES = [MODES.LEARN, MODES.PRACTICE, MODES.QUIZ, MODES.PROOF]
+
+function FormalProof() {
+  return (
+    <div className="formal-proof">
+      <h2>Formal Proof</h2>
+
+      <p className="part-label">Part (a). For 1 ≤ k &lt; ℓ ≤ n, E[Δ<sub>k</sub>Δ<sub>ℓ</sub>] = 0.</p>
+      <Tex block>{String.raw`\begin{aligned}
+        \mathbb{E}[\Delta_k \Delta_\ell]
+          &= \mathbb{E}\!\bigl[\,\mathbb{E}[\Delta_k \Delta_\ell \mid M_0,\dots,M_{\ell-1}]\,\bigr]
+            && \text{(tower)} \\
+          &= \mathbb{E}\!\bigl[\Delta_k \cdot \mathbb{E}[\Delta_\ell \mid M_0,\dots,M_{\ell-1}]\bigr]
+            && \text{(\(\Delta_k\) measurable in past, \(k<\ell\))} \\
+          &= \mathbb{E}[\Delta_k \cdot 0] = 0.
+            && \text{(martingale property)}
+      \end{aligned}`}</Tex>
+
+      <p className="part-label">Part (b). V := E[(M<sub>n</sub> − M<sub>0</sub>)²] = Σ E[Δ<sub>s</sub>²].</p>
+      <Tex block>{String.raw`\begin{aligned}
+        M_n - M_0 &= \textstyle\sum_{s=1}^{n} \Delta_s
+          && \text{(telescoping)} \\
+        \bigl(M_n - M_0\bigr)^2 &= \textstyle\sum_{s=1}^{n} \Delta_s^2 \;+\; 2\!\sum_{1 \le k < \ell \le n} \Delta_k \Delta_\ell
+          && \text{(expand the square)} \\
+        \mathbb{E}\!\bigl[(M_n - M_0)^2\bigr] &= \textstyle\sum_{s=1}^{n} \mathbb{E}[\Delta_s^2] \;+\; 0 \;=\; \sum_{s=1}^{n} \mathbb{E}[\Delta_s^2].
+          && \text{(linearity; (a))}
+      \end{aligned}`}</Tex>
+
+      <p className="part-label">Part (c). ∃ 1 ≤ k ≤ n with P(|Δ<sub>k</sub>| &gt; t) ≤ V/(nt²) for all t &gt; 0.</p>
+      <Tex block>{String.raw`\begin{aligned}
+        \textstyle\sum_{s=1}^n \mathbb{E}[\Delta_s^2] = V
+          \;&\Longrightarrow\; \exists\, k:\; \mathbb{E}[\Delta_k^2] \;\le\; V/n
+            && \text{(averaging)} \\
+        \mathbb{P}\!\bigl(|\Delta_k| > t\bigr)
+          &= \mathbb{P}(\Delta_k^2 > t^2)
+            \;\le\; \mathbb{E}[\Delta_k^2]\,/\,t^2
+            \;\le\; V/(n t^2).
+            && \text{(Markov on \(\Delta_k^2\))}
+      \end{aligned}`}</Tex>
+
+      <p className="qed">∎</p>
+    </div>
+  )
+}
 
 export default function Problem1() {
   useEffect(() => {
     document.title = 'PS6 Problem 1 — Martingale Increments'
   }, [])
+
+  const { mode } = useDifficulty()
 
   return (
     <div className="container container-narrow">
@@ -25,7 +74,9 @@ export default function Problem1() {
         and (c) at least one of them obeys a Chebyshev-style bound V/(nt²).
       </p>
 
-      <DifficultyDial />
+      <DifficultyDial modes={PROOF_MODES} />
+
+      {mode === MODES.PROOF ? <FormalProof /> : (<>
 
       {/* ============= STEP 0: ORIENT ============= */}
       <Step
@@ -346,6 +397,8 @@ export default function Problem1() {
         <p><strong>4. Forward to Problem 2.</strong>
           {' '}The next problem uses the <em>bounded differences inequality</em> (McDiarmid) to prove concentration of a bin-packing statistic. McDiarmid is proven by building a Doob martingale and applying Azuma — which uses exactly parts (a) and (b) of this problem as its engine. You're building the tools here for a bigger job next.</p>
       </Box>
+
+      </>)}
 
       <Footer />
 

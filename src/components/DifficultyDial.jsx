@@ -1,13 +1,25 @@
+import { useEffect } from 'react'
 import { useDifficulty, MODES } from './DifficultyContext'
 
-const options = [
+const ALL_OPTIONS = [
   { key: MODES.LEARN, label: 'Learn' },
   { key: MODES.PRACTICE, label: 'Practice' },
   { key: MODES.QUIZ, label: 'Quiz' },
+  { key: MODES.PROOF, label: 'Proof' },
 ]
 
-export default function DifficultyDial() {
+const DEFAULT_MODES = [MODES.LEARN, MODES.PRACTICE, MODES.QUIZ]
+
+export default function DifficultyDial({ modes = DEFAULT_MODES }) {
   const { mode, setMode } = useDifficulty()
+
+  // If the user navigated here while in a mode that's not enabled on this page,
+  // snap back to LEARN so the dial state matches what's actually rendered.
+  useEffect(() => {
+    if (!modes.includes(mode)) setMode(MODES.LEARN)
+  }, [modes, mode, setMode])
+
+  const options = ALL_OPTIONS.filter((o) => modes.includes(o.key))
 
   return (
     <>

@@ -7,11 +7,42 @@ import Step from '../../components/Step'
 import MathBlock from '../../components/MathBlock'
 import Box from '../../components/Box'
 import Footer from '../../components/Footer'
+import Tex from '../../components/Tex'
+import { useDifficulty, MODES } from '../../components/DifficultyContext'
+
+const PROOF_MODES = [MODES.LEARN, MODES.PRACTICE, MODES.QUIZ, MODES.PROOF]
+
+function FormalProof() {
+  return (
+    <div className="formal-proof">
+      <h2>Formal Proof</h2>
+
+      <p className="part-label">Claim. disc(𝒜) = O(√(m log(mt))).</p>
+      <Tex block>{String.raw`\begin{aligned}
+        & \chi(i) \stackrel{\text{iid}}{\sim} \text{Unif}\{-1, +1\};\quad
+          Z_A := \textstyle\sum_{i \in A} \chi(i);\quad B_A := \{|Z_A| > \lambda\}. \\[4pt]
+        & \text{Hoeffding: } \mathbb{P}(B_A) \le 2\,\exp\!\bigl(-\lambda^2/(2m)\bigr) =: p. \\[4pt]
+        & \text{Each } i \in A \text{ in} \le t \text{ sets} \;\Rightarrow\; \le m(t-1) \le mt \text{ other } A' \text{ meet } A.
+            \;\Rightarrow\; d := mt. \\[4pt]
+        & \text{Symmetric LLL hypothesis: } e \cdot p \cdot (d + 1) \le 1 \;\Longleftrightarrow\;
+            \lambda^2 \,\ge\, 2m\bigl(1 + \ln 2 + \ln(mt + 1)\bigr). \\[4pt]
+        & \text{Take } \lambda \,=\, C\,\sqrt{m \log(mt)} \text{ for large enough } C. \\[4pt]
+        & \text{LLL} \;\Longrightarrow\; \mathbb{P}\!\Bigl(\bigcap_{A \in \mathcal{A}} \neg B_A\Bigr) > 0
+            \;\Longrightarrow\; \exists\, \chi:\; \max_{A \in \mathcal{A}} |Z_A| \le \lambda. \\[4pt]
+        & \therefore\; \mathrm{disc}(\mathcal{A}) \;\le\; O\!\bigl(\sqrt{m \log(mt)}\,\bigr).
+      \end{aligned}`}</Tex>
+
+      <p className="qed">∎</p>
+    </div>
+  )
+}
 
 export default function Problem3() {
   useEffect(() => {
     document.title = 'PS6 Problem 3 — Discrepancy via the Lovász Local Lemma'
   }, [])
+
+  const { mode } = useDifficulty()
 
   return (
     <div className="container container-narrow">
@@ -25,7 +56,9 @@ export default function Problem3() {
         O(√(m log(mt))). The union bound is too weak; the Lovász Local Lemma is the right tool.
       </p>
 
-      <DifficultyDial />
+      <DifficultyDial modes={PROOF_MODES} />
+
+      {mode === MODES.PROOF ? <FormalProof /> : (<>
 
       {/* ============= ORIENT ============= */}
       <Step
@@ -283,6 +316,8 @@ export default function Problem3() {
 
         <p><strong>→ This is the 'probabilistic method, level 2.'</strong> Unit 5 Problem 1 was the level-1 version (random construction + union bound + Erdős-style existence). Here, the local dependency structure makes the union bound too weak; LLL is what you reach for when you need <em>locally-aware</em> probabilistic existence.</p>
       </Box>
+
+      </>)}
 
       <Footer />
 

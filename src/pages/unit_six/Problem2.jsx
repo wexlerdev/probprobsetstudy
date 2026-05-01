@@ -7,11 +7,63 @@ import Step from '../../components/Step'
 import MathBlock from '../../components/MathBlock'
 import Box from '../../components/Box'
 import Footer from '../../components/Footer'
+import Tex from '../../components/Tex'
+import { useDifficulty, MODES } from '../../components/DifficultyContext'
+
+const PROOF_MODES = [MODES.LEARN, MODES.PRACTICE, MODES.QUIZ, MODES.PROOF]
+
+function FormalProof() {
+  return (
+    <div className="formal-proof">
+      <h2>Formal Proof</h2>
+
+      <p className="part-label">Part (a). Two explicit values of B.</p>
+      <Tex block>{String.raw`\begin{aligned}
+        & B\!\left(\tfrac12, \tfrac13, \tfrac23, \tfrac23, \tfrac34\right): \\
+        & \quad \tfrac{2}{3}+\tfrac{2}{3} > 1,\ \tfrac{2}{3}+\tfrac{3}{4} > 1
+            && \text{(big items pairwise conflict} \Rightarrow B \ge 3) \\
+        & \quad \tfrac12 + (\text{any big}) > 1
+            && \text{(}\tfrac12 \text{ in own bin or with } \tfrac13 \Rightarrow B \ge 4\text{)} \\
+        & \quad \bigl\{\tfrac34\bigr\},\ \bigl\{\tfrac23, \tfrac13\bigr\},\ \bigl\{\tfrac23\bigr\},\ \bigl\{\tfrac12\bigr\}
+            && \text{(valid 4-bin packing} \Rightarrow B \le 4) \\
+        & \quad \therefore\; B = 4. \\[4pt]
+        & B\!\left(\tfrac12, \tfrac14, \dots, \tfrac{1}{2^m}\right) = 1:
+            \quad \textstyle\sum_{k=1}^m 2^{-k} = 1 - 2^{-m} < 1.
+      \end{aligned}`}</Tex>
+
+      <p className="part-label">Part (b). For x<sub>1</sub>, ..., x<sub>n</sub> ∈ [0, 1]: Σ x<sub>i</sub> ≤ B ≤ 1 + 2 Σ x<sub>i</sub>.</p>
+      <Tex block>{String.raw`\begin{aligned}
+        \textstyle\sum_{i=1}^n x_i &\le B
+          && \text{(each bin holds mass} \le 1; B \text{ bins hold all items)} \\
+        \text{First-Fit} & : \text{at most one bin ends with fill} \le \tfrac12;
+          && \text{(else first item in later half-empty bin would fit earlier)} \\
+        \textstyle\sum x_i &> (B_{\!FF} - 1)/2
+          && \text{(sum of fills)} \\
+        B \;\le\; B_{\!FF} &\;\le\; 1 + 2\,\textstyle\sum_{i=1}^n x_i.
+          && \text{(} B_{\!FF} \text{ integer)}
+      \end{aligned}`}</Tex>
+
+      <p className="part-label">Part (c). E[X<sub>i</sub>] ≥ 0.1 ⟹ B<sub>N</sub> concentrates around E[B<sub>N</sub>] ≍ N.</p>
+      <Tex block>{String.raw`\begin{aligned}
+        0.1\,N \;\le\; \mathbb{E}[B_N] \;&\le\; 1 + 2N \;\Longrightarrow\; \mathbb{E}[B_N] \asymp N
+          && \text{(take \(\mathbb{E}\) of (b))} \\
+        \bigl|\,B_N(x) - B_N(x \text{ with one } x_i \text{ swapped})\,\bigr| \;&\le\; 1
+          && \text{(open one new bin for the replacement)} \\
+        \text{McDiarmid } (c_i = 1) :\; \mathbb{P}\!\bigl(|B_N - \mathbb{E}[B_N]| \ge t\bigr) \;&\le\; 2\,\exp\!\bigl(-2t^2/N\bigr) \\
+        t = 0.01\,\mathbb{E}[B_N],\;\, \mathbb{E}[B_N] \ge 0.1\,N \;&\Longrightarrow\; \text{bound} \le 2\,e^{-2 \cdot 10^{-6}\,N} \le e^{-cN}.
+      \end{aligned}`}</Tex>
+
+      <p className="qed">∎</p>
+    </div>
+  )
+}
 
 export default function Problem2() {
   useEffect(() => {
     document.title = 'PS6 Problem 2 — Bin Packing: Bounds and Concentration'
   }, [])
+
+  const { mode } = useDifficulty()
 
   return (
     <div className="container container-narrow">
@@ -26,7 +78,9 @@ export default function Problem2() {
         via McDiarmid's bounded-differences inequality.
       </p>
 
-      <DifficultyDial />
+      <DifficultyDial modes={PROOF_MODES} />
+
+      {mode === MODES.PROOF ? <FormalProof /> : (<>
 
       {/* ============= ORIENT ============= */}
       <Step
@@ -372,6 +426,8 @@ export default function Problem2() {
         <p><strong>4. Volume vs structure.</strong>
           {' '}Part (a) made vivid that B sees both <em>total mass</em> and <em>geometry</em> (which items can co-exist). Part (b) showed the geometric overhead is at most a factor of 2 plus an additive 1. Part (c) showed that for random inputs the geometric noise washes out exponentially. This three-step pattern — concrete examples → uniform structural bound → probabilistic tightening — is a recurring template for analyzing combinatorial random objects.</p>
       </Box>
+
+      </>)}
 
       <Footer />
 

@@ -7,11 +7,63 @@ import Step from '../../components/Step'
 import MathBlock from '../../components/MathBlock'
 import Box from '../../components/Box'
 import Footer from '../../components/Footer'
+import Tex from '../../components/Tex'
+import { useDifficulty, MODES } from '../../components/DifficultyContext'
+
+const PROOF_MODES = [MODES.LEARN, MODES.PRACTICE, MODES.QUIZ, MODES.PROOF]
+
+function FormalProof() {
+  return (
+    <div className="formal-proof">
+      <h2>Formal Proof</h2>
+
+      <p className="part-label">Part (a). For monotone f, g and any random variable ξ: E[f(ξ)g(ξ)] ≥ E[f(ξ)] E[g(ξ)].</p>
+      <Tex block>{String.raw`\begin{aligned}
+        & \text{Pointwise: } (f(t) - f(s))(g(t) - g(s)) \ge 0 \;\;\forall\, s,t \in \mathbb{R}
+            && \text{(case } t \gtreqless s\text{)} \\
+        & \text{Let } \xi' \perp\!\!\!\perp \xi,\; \xi' \stackrel{d}{=} \xi.\;\;
+            \text{Plug } s = \xi',\, t = \xi,\; \text{take } \mathbb{E}: \\
+        & 0 \le \mathbb{E}\!\bigl[(f(\xi) - f(\xi'))(g(\xi) - g(\xi'))\bigr]
+            = 2\,\mathbb{E}[f(\xi)g(\xi)] - 2\,\mathbb{E}[f(\xi)]\,\mathbb{E}[g(\xi)] \\
+        & \text{(independence + same dist)} \\
+        & \therefore\; \mathbb{E}[f(\xi)g(\xi)] \ge \mathbb{E}[f(\xi)]\,\mathbb{E}[g(\xi)].
+      \end{aligned}`}</Tex>
+
+      <p className="part-label">Part (b). F, G : ℝⁿ → ℝ coord. monotone, X = (X<sub>1</sub>,...,X<sub>n</sub>) indep ⟹ E[F(X)G(X)] ≥ E[F(X)] E[G(X)].</p>
+      <Tex block>{String.raw`\begin{aligned}
+        & \text{Induct on } n.\;\; \text{Base } n=1 = \text{(a)}. \\
+        & \text{Step: define } f(x) := \mathbb{E}[F(x, X_2, \dots, X_n)],\;\; g(x) := \mathbb{E}[G(x, X_2, \dots, X_n)]. \\
+        & f, g \text{ monotone in } x
+            && \text{(monotonicity of } F, G \text{ + monotonicity of } \mathbb{E}\text{)} \\
+        & \text{IH on } n-1:\;\; \mathbb{E}[FG \mid X_1 = x] \ge f(x) g(x). \\
+        & \text{Apply (a) on } X_1:\;\; \mathbb{E}[f(X_1)\,g(X_1)] \ge \mathbb{E}[f(X_1)]\,\mathbb{E}[g(X_1)] = \mathbb{E}[F]\,\mathbb{E}[G]. \\
+        & \therefore\; \mathbb{E}[FG] = \mathbb{E}\!\bigl[\mathbb{E}[FG \mid X_1]\bigr] \ge \mathbb{E}[f(X_1)g(X_1)] \ge \mathbb{E}[F]\,\mathbb{E}[G].
+      \end{aligned}`}</Tex>
+
+      <p className="part-label">Part (c). F<sub>1</sub>,...,F<sub>m</sub> coord. monotone nonneg ⟹ E[∏ F<sub>j</sub>(X)] ≥ ∏ E[F<sub>j</sub>(X)].</p>
+      <Tex block>{String.raw`\begin{aligned}
+        & \text{Induct on } m.\;\; \text{Base } m=1 \text{ trivial.} \\
+        & \text{Step: } \Pi := \textstyle\prod_{j=1}^{m-1} F_j \text{ is monotone nonneg}
+            && \text{(product of monotone nonneg)} \\
+        & \text{Apply (b) to } F_m \text{ and } \Pi :\;\;
+            \mathbb{E}[F_m \cdot \Pi] \ge \mathbb{E}[F_m] \cdot \mathbb{E}[\Pi]. \\
+        & \text{IH on } m-1:\;\; \mathbb{E}[\Pi] \ge \textstyle\prod_{j=1}^{m-1} \mathbb{E}[F_j]. \\
+        & \therefore\; \mathbb{E}\!\Bigl[\textstyle\prod_{j=1}^{m} F_j\Bigr]
+            \;\ge\; \mathbb{E}[F_m] \cdot \textstyle\prod_{j=1}^{m-1} \mathbb{E}[F_j]
+            \;=\; \textstyle\prod_{j=1}^{m} \mathbb{E}[F_j].
+      \end{aligned}`}</Tex>
+
+      <p className="qed">∎</p>
+    </div>
+  )
+}
 
 export default function Problem4() {
   useEffect(() => {
     document.title = 'PS6 Problem 4 — Harris / FKG Correlation Inequality'
   }, [])
+
+  const { mode } = useDifficulty()
 
   return (
     <div className="container container-narrow">
@@ -26,7 +78,9 @@ export default function Problem4() {
         The slick two-independent-copies trick powers the whole tower.
       </p>
 
-      <DifficultyDial />
+      <DifficultyDial modes={PROOF_MODES} />
+
+      {mode === MODES.PROOF ? <FormalProof /> : (<>
 
       {/* ============= ORIENT ============= */}
       <Step
@@ -390,6 +444,8 @@ export default function Problem4() {
 
         <p><strong>→ Contrast: anti-concentration (Unit 5 P1).</strong> Both Harris and the anti-concentration result of Unit 5 P1 are about products of independent ±1's. There the question was "how often is a signed sum FAR from zero?"; here it's "how do monotone functionals correlate?" Different statistics, same independent-product setting — the toolkit is reused throughout.</p>
       </Box>
+
+      </>)}
 
       <Footer />
 
