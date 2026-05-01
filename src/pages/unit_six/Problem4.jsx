@@ -15,43 +15,56 @@ const PROOF_MODES = [MODES.LEARN, MODES.PRACTICE, MODES.QUIZ, MODES.PROOF]
 function FormalProof() {
   return (
     <div className="formal-proof">
-      <h2>Formal Proof</h2>
+      <h2>Proof</h2>
 
-      <p className="part-label">Part (a). For monotone f, g and any random variable ξ: E[f(ξ)g(ξ)] ≥ E[f(ξ)] E[g(ξ)].</p>
-      <Tex block>{String.raw`\begin{aligned}
-        & \text{Pointwise: } (f(t) - f(s))(g(t) - g(s)) \ge 0 \;\;\forall\, s,t \in \mathbb{R}
-            && \text{(case } t \gtreqless s\text{)} \\
-        & \text{Let } \xi' \perp\!\!\!\perp \xi,\; \xi' \stackrel{d}{=} \xi.\;\;
-            \text{Plug } s = \xi',\, t = \xi,\; \text{take } \mathbb{E}: \\
-        & 0 \le \mathbb{E}\!\bigl[(f(\xi) - f(\xi'))(g(\xi) - g(\xi'))\bigr]
-            = 2\,\mathbb{E}[f(\xi)g(\xi)] - 2\,\mathbb{E}[f(\xi)]\,\mathbb{E}[g(\xi)] \\
-        & \text{(independence + same dist)} \\
-        & \therefore\; \mathbb{E}[f(\xi)g(\xi)] \ge \mathbb{E}[f(\xi)]\,\mathbb{E}[g(\xi)].
-      \end{aligned}`}</Tex>
+      <p className="part-label">Part (a). For monotone f, g and any random variable ξ: E[f(ξ)g(ξ)] ≥ E[f(ξ)] · E[g(ξ)].</p>
 
-      <p className="part-label">Part (b). F, G : ℝⁿ → ℝ coord. monotone, X = (X<sub>1</sub>,...,X<sub>n</sub>) indep ⟹ E[F(X)G(X)] ≥ E[F(X)] E[G(X)].</p>
-      <Tex block>{String.raw`\begin{aligned}
-        & \text{Induct on } n.\;\; \text{Base } n=1 = \text{(a)}. \\
-        & \text{Step: define } f(x) := \mathbb{E}[F(x, X_2, \dots, X_n)],\;\; g(x) := \mathbb{E}[G(x, X_2, \dots, X_n)]. \\
-        & f, g \text{ monotone in } x
-            && \text{(monotonicity of } F, G \text{ + monotonicity of } \mathbb{E}\text{)} \\
-        & \text{IH on } n-1:\;\; \mathbb{E}[FG \mid X_1 = x] \ge f(x) g(x). \\
-        & \text{Apply (a) on } X_1:\;\; \mathbb{E}[f(X_1)\,g(X_1)] \ge \mathbb{E}[f(X_1)]\,\mathbb{E}[g(X_1)] = \mathbb{E}[F]\,\mathbb{E}[G]. \\
-        & \therefore\; \mathbb{E}[FG] = \mathbb{E}\!\bigl[\mathbb{E}[FG \mid X_1]\bigr] \ge \mathbb{E}[f(X_1)g(X_1)] \ge \mathbb{E}[F]\,\mathbb{E}[G].
-      \end{aligned}`}</Tex>
+      <p>Start with a pointwise fact: for all real s, t,</p>
+      <Tex block>{String.raw`(f(t) - f(s))(g(t) - g(s)) \;\ge\; 0.`}</Tex>
+      <p>(If t ≥ s, both factors are ≥ 0 since f and g are increasing; if t &lt; s, both factors are ≤ 0; product is nonneg either way.)</p>
 
-      <p className="part-label">Part (c). F<sub>1</sub>,...,F<sub>m</sub> coord. monotone nonneg ⟹ E[∏ F<sub>j</sub>(X)] ≥ ∏ E[F<sub>j</sub>(X)].</p>
-      <Tex block>{String.raw`\begin{aligned}
-        & \text{Induct on } m.\;\; \text{Base } m=1 \text{ trivial.} \\
-        & \text{Step: } \Pi := \textstyle\prod_{j=1}^{m-1} F_j \text{ is monotone nonneg}
-            && \text{(product of monotone nonneg)} \\
-        & \text{Apply (b) to } F_m \text{ and } \Pi :\;\;
-            \mathbb{E}[F_m \cdot \Pi] \ge \mathbb{E}[F_m] \cdot \mathbb{E}[\Pi]. \\
-        & \text{IH on } m-1:\;\; \mathbb{E}[\Pi] \ge \textstyle\prod_{j=1}^{m-1} \mathbb{E}[F_j]. \\
-        & \therefore\; \mathbb{E}\!\Bigl[\textstyle\prod_{j=1}^{m} F_j\Bigr]
-            \;\ge\; \mathbb{E}[F_m] \cdot \textstyle\prod_{j=1}^{m-1} \mathbb{E}[F_j]
-            \;=\; \textstyle\prod_{j=1}^{m} \mathbb{E}[F_j].
-      \end{aligned}`}</Tex>
+      <p>Let ξ' be an independent copy of ξ — same distribution, independent of ξ. The pointwise inequality holds for any pair of real numbers, so it holds when we plug in random ones:</p>
+      <Tex block>{String.raw`(f(\xi) - f(\xi'))(g(\xi) - g(\xi')) \;\ge\; 0 \quad\text{almost surely}.`}</Tex>
+
+      <p>Take expectations and expand the product (FOIL):</p>
+      <Tex block>{String.raw`0 \;\le\; E[f(\xi)g(\xi)] \;-\; E[f(\xi)g(\xi')] \;-\; E[f(\xi')g(\xi)] \;+\; E[f(\xi')g(\xi')].`}</Tex>
+
+      <p>Now simplify each cross term using independence: ξ ⊥ ξ' gives E[f(ξ)g(ξ')] = E[f(ξ)] · E[g(ξ')], and ξ' has the same distribution as ξ, so E[g(ξ')] = E[g(ξ)]. Thus:</p>
+      <Tex block>{String.raw`E[f(\xi)g(\xi')] \;=\; E[f(\xi)] \cdot E[g(\xi)],`}</Tex>
+      <p>and the same argument gives E[f(ξ')g(ξ)] = E[f(ξ)] · E[g(ξ)]. The remaining diagonal term: ξ' has the same distribution as ξ, so E[f(ξ')g(ξ')] = E[f(ξ)g(ξ)]. Substituting all four:</p>
+      <Tex block>{String.raw`0 \;\le\; 2\,E[f(\xi)g(\xi)] \;-\; 2\,E[f(\xi)] \cdot E[g(\xi)],`}</Tex>
+      <p>which gives E[f(ξ)g(ξ)] ≥ E[f(ξ)] · E[g(ξ)].</p>
+
+      <p className="part-label">Part (b). For coordinatewise-monotone F, G : ℝⁿ → ℝ and independent X = (X<sub>1</sub>, ..., X<sub>n</sub>): E[F(X)G(X)] ≥ E[F(X)] · E[G(X)].</p>
+
+      <p>Induct on n. The base case n = 1 is part (a) directly.</p>
+
+      <p>For the inductive step, define</p>
+      <Tex block>{String.raw`f(x) \;:=\; E[F(x, X_2, \ldots, X_n)], \qquad g(x) \;:=\; E[G(x, X_2, \ldots, X_n)].`}</Tex>
+
+      <p>Both f and g are monotone increasing in x: if x ≤ y, then F(x, ·) ≤ F(y, ·) pointwise (coordinatewise monotonicity), and expectation preserves the inequality. Same for g.</p>
+
+      <p>By the inductive hypothesis on the n − 1 independent variables X<sub>2</sub>, ..., X<sub>n</sub> (with x held fixed):</p>
+      <Tex block>{String.raw`E[F(x, X_2, \ldots, X_n) \cdot G(x, X_2, \ldots, X_n)] \;\ge\; f(x) \cdot g(x).`}</Tex>
+
+      <p>This holds for every x. Take expectation over X<sub>1</sub> using the tower property:</p>
+      <Tex block>{String.raw`E[F(X) G(X)] \;=\; E\!\left[E[F G \mid X_1]\right] \;\ge\; E[f(X_1) \cdot g(X_1)].`}</Tex>
+
+      <p>Now apply part (a) to the monotone single-variable functions f, g and the random variable X<sub>1</sub>:</p>
+      <Tex block>{String.raw`E[f(X_1) g(X_1)] \;\ge\; E[f(X_1)] \cdot E[g(X_1)] \;=\; E[F(X)] \cdot E[G(X)],`}</Tex>
+      <p>where the last equality uses the tower property again to identify E[f(X<sub>1</sub>)] = E[E[F(X) | X<sub>1</sub>]] = E[F(X)]. Combining: E[F(X)G(X)] ≥ E[F(X)] · E[G(X)].</p>
+
+      <p className="part-label">Part (c). For nonneg coordinatewise-monotone F<sub>1</sub>, ..., F<sub>m</sub>: E[∏ F<sub>j</sub>(X)] ≥ ∏ E[F<sub>j</sub>(X)].</p>
+
+      <p>Induct on m. The base case m = 1 is trivial.</p>
+
+      <p>For the inductive step, let Π := ∏<sub>j=1</sub><sup>m−1</sup> F<sub>j</sub>. The product of nonneg increasing functions is increasing: if x ≤ y in some coordinate, every F<sub>j</sub>(x) ≤ F<sub>j</sub>(y) and all the values are ≥ 0, so multiplying preserves the order. So Π is itself nonneg and coordinatewise monotone.</p>
+
+      <p>Apply part (b) to F<sub>m</sub> and Π:</p>
+      <Tex block>{String.raw`E[F_m \cdot \Pi] \;\ge\; E[F_m] \cdot E[\Pi].`}</Tex>
+
+      <p>By the inductive hypothesis on the m − 1 functions F<sub>1</sub>, ..., F<sub>m−1</sub>, E[Π] ≥ ∏<sub>j&lt;m</sub> E[F<sub>j</sub>]. Multiplying both sides by E[F<sub>m</sub>] ≥ 0 preserves the inequality:</p>
+      <Tex block>{String.raw`E\!\left[\prod_{j=1}^{m} F_j\right] \;\ge\; E[F_m] \cdot \prod_{j=1}^{m-1} E[F_j] \;=\; \prod_{j=1}^{m} E[F_j].`}</Tex>
 
       <p className="qed">∎</p>
     </div>

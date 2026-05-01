@@ -15,40 +15,36 @@ const PROOF_MODES = [MODES.LEARN, MODES.PRACTICE, MODES.QUIZ, MODES.PROOF]
 function FormalProof() {
   return (
     <div className="formal-proof">
-      <h2>Formal Proof</h2>
+      <h2>Proof</h2>
 
       <p className="part-label">Part (a). For 1 ≤ k &lt; ℓ ≤ n, E[Δ<sub>k</sub>Δ<sub>ℓ</sub>] = 0.</p>
-      <Tex block>{String.raw`\begin{aligned}
-        \mathbb{E}[\Delta_k \Delta_\ell]
-          &= \mathbb{E}\!\bigl[\,\mathbb{E}[\Delta_k \Delta_\ell \mid M_0,\dots,M_{\ell-1}]\,\bigr]
-            && \text{(tower)} \\
-          &= \mathbb{E}\!\bigl[\Delta_k \cdot \mathbb{E}[\Delta_\ell \mid M_0,\dots,M_{\ell-1}]\bigr]
-            && \text{(\(\Delta_k\) measurable in past, \(k<\ell\))} \\
-          &= \mathbb{E}[\Delta_k \cdot 0] = 0.
-            && \text{(martingale property)}
-      \end{aligned}`}</Tex>
+
+      <p>By the tower property, condition on the past at time ℓ:</p>
+      <Tex block>{String.raw`E[\Delta_k \Delta_\ell] \;=\; E\!\left[\,E[\Delta_k \Delta_\ell \mid M_0, \ldots, M_{\ell-1}]\,\right].`}</Tex>
+
+      <p>Since k &lt; ℓ, the random variable Δ<sub>k</sub> = M<sub>k</sub> − M<sub>k−1</sub> is fully determined by the conditioning information M<sub>0</sub>, ..., M<sub>ℓ−1</sub>. The general "take out what's known" rule for conditional expectation says: if X is determined by G then E[X·Z | G] = X · E[Z | G]. So Δ<sub>k</sub> pulls out:</p>
+      <Tex block>{String.raw`= E\!\left[\,\Delta_k \cdot E[\Delta_\ell \mid M_0, \ldots, M_{\ell-1}]\,\right].`}</Tex>
+
+      <p>The martingale property says the inner conditional expectation is zero, so:</p>
+      <Tex block>{String.raw`= E[\Delta_k \cdot 0] \;=\; 0.`}</Tex>
 
       <p className="part-label">Part (b). V := E[(M<sub>n</sub> − M<sub>0</sub>)²] = Σ E[Δ<sub>s</sub>²].</p>
-      <Tex block>{String.raw`\begin{aligned}
-        M_n - M_0 &= \textstyle\sum_{s=1}^{n} \Delta_s
-          && \text{(telescoping)} \\
-        \bigl(M_n - M_0\bigr)^2 &= \textstyle\sum_{s=1}^{n} \Delta_s^2 \;+\; 2\!\sum_{1 \le k < \ell \le n} \Delta_k \Delta_\ell
-          && \text{(expand the square)} \\
-        \mathbb{E}\!\bigl[(M_n - M_0)^2\bigr] &= \textstyle\sum_{s=1}^{n} \mathbb{E}[\Delta_s^2] \;+\; 0 \;=\; \sum_{s=1}^{n} \mathbb{E}[\Delta_s^2].
-          && \text{(linearity; (a))}
-      \end{aligned}`}</Tex>
 
-      <p className="part-label">Part (c). ∃ 1 ≤ k ≤ n with P(|Δ<sub>k</sub>| &gt; t) ≤ V/(nt²) for all t &gt; 0.</p>
-      <Tex block>{String.raw`\begin{aligned}
-        \textstyle\sum_{s=1}^n \mathbb{E}[\Delta_s^2] = V
-          \;&\Longrightarrow\; \exists\, k:\; \mathbb{E}[\Delta_k^2] \;\le\; V/n
-            && \text{(averaging)} \\
-        \mathbb{P}\!\bigl(|\Delta_k| > t\bigr)
-          &= \mathbb{P}(\Delta_k^2 > t^2)
-            \;\le\; \mathbb{E}[\Delta_k^2]\,/\,t^2
-            \;\le\; V/(n t^2).
-            && \text{(Markov on \(\Delta_k^2\))}
-      \end{aligned}`}</Tex>
+      <p>The increments telescope:</p>
+      <Tex block>{String.raw`M_n - M_0 \;=\; \sum_{s=1}^{n} \Delta_s.`}</Tex>
+
+      <p>Square both sides and split into diagonal and cross terms:</p>
+      <Tex block>{String.raw`(M_n - M_0)^2 \;=\; \sum_{s=1}^{n} \Delta_s^2 \;+\; 2\!\sum_{1 \le k < \ell \le n} \Delta_k \Delta_\ell.`}</Tex>
+
+      <p>Take expectations using linearity. By part (a), every cross-term E[Δ<sub>k</sub>Δ<sub>ℓ</sub>] vanishes, so the second sum is zero:</p>
+      <Tex block>{String.raw`E\!\left[(M_n - M_0)^2\right] \;=\; \sum_{s=1}^{n} E[\Delta_s^2].`}</Tex>
+
+      <p className="part-label">Part (c). There is some 1 ≤ k ≤ n with P(|Δ<sub>k</sub>| &gt; t) ≤ V/(nt²) for all t &gt; 0.</p>
+
+      <p>The n nonnegative numbers E[Δ<sub>1</sub>²], ..., E[Δ<sub>n</sub>²] sum to V. If every one of them were strictly greater than V/n, their sum would exceed V — contradiction. So at least one k satisfies E[Δ<sub>k</sub>²] ≤ V/n.</p>
+
+      <p>For that k, apply Markov's inequality to the nonneg random variable Δ<sub>k</sub>² with threshold t²:</p>
+      <Tex block>{String.raw`P(|\Delta_k| > t) \;=\; P(\Delta_k^2 > t^2) \;\le\; \frac{E[\Delta_k^2]}{t^2} \;\le\; \frac{V}{n t^2}.`}</Tex>
 
       <p className="qed">∎</p>
     </div>

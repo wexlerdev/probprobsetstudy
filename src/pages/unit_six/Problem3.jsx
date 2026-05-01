@@ -15,22 +15,31 @@ const PROOF_MODES = [MODES.LEARN, MODES.PRACTICE, MODES.QUIZ, MODES.PROOF]
 function FormalProof() {
   return (
     <div className="formal-proof">
-      <h2>Formal Proof</h2>
+      <h2>Proof</h2>
 
-      <p className="part-label">Claim. disc(𝒜) = O(√(m log(mt))).</p>
-      <Tex block>{String.raw`\begin{aligned}
-        & \chi(i) \stackrel{\text{iid}}{\sim} \text{Unif}\{-1, +1\};\quad
-          Z_A := \textstyle\sum_{i \in A} \chi(i);\quad B_A := \{|Z_A| > \lambda\}. \\[4pt]
-        & \text{Hoeffding: } \mathbb{P}(B_A) \le 2\,\exp\!\bigl(-\lambda^2/(2m)\bigr) =: p. \\[4pt]
-        & \text{Each } i \in A \text{ in} \le t \text{ sets} \;\Rightarrow\; \le m(t-1) \le mt \text{ other } A' \text{ meet } A.
-            \;\Rightarrow\; d := mt. \\[4pt]
-        & \text{Symmetric LLL hypothesis: } e \cdot p \cdot (d + 1) \le 1 \;\Longleftrightarrow\;
-            \lambda^2 \,\ge\, 2m\bigl(1 + \ln 2 + \ln(mt + 1)\bigr). \\[4pt]
-        & \text{Take } \lambda \,=\, C\,\sqrt{m \log(mt)} \text{ for large enough } C. \\[4pt]
-        & \text{LLL} \;\Longrightarrow\; \mathbb{P}\!\Bigl(\bigcap_{A \in \mathcal{A}} \neg B_A\Bigr) > 0
-            \;\Longrightarrow\; \exists\, \chi:\; \max_{A \in \mathcal{A}} |Z_A| \le \lambda. \\[4pt]
-        & \therefore\; \mathrm{disc}(\mathcal{A}) \;\le\; O\!\bigl(\sqrt{m \log(mt)}\,\bigr).
-      \end{aligned}`}</Tex>
+      <p className="part-label">Claim. disc(𝒜) ≤ O(√(m log(mt))).</p>
+
+      <p>Pick a random coloring: let χ(1), ..., χ(N) be independent uniform ±1 signs. For each set A ∈ 𝒜, write</p>
+      <Tex block>{String.raw`Z_A \;:=\; \sum_{i \in A} \chi(i),`}</Tex>
+      <p>and let B<sub>A</sub> be the "bad event" {'{'}|Z<sub>A</sub>| &gt; λ{'}'}, where λ is a parameter to choose. The plan: pick λ so that with positive probability no B<sub>A</sub> happens — then a coloring with max imbalance ≤ λ must exist.</p>
+
+      <p><strong>Per-event tail bound.</strong> Z<sub>A</sub> is a sum of m independent ±1 variables. By Hoeffding:</p>
+      <Tex block>{String.raw`P(B_A) \;\le\; 2\,\exp\!\left(-\frac{\lambda^2}{2m}\right) \;=:\; p.`}</Tex>
+
+      <p><strong>Dependency degree.</strong> B<sub>A</sub> depends only on the χ(i) for i ∈ A. So B<sub>A</sub> and B<sub>A'</sub> are mutually independent whenever A ∩ A' = ∅. Each i ∈ A is in at most t sets total (degree-t hypothesis), so at most t − 1 sets <em>other than A</em> contain i. Summing over i ∈ A, the number of A' ≠ A meeting A is at most m(t − 1) ≤ mt. So each B<sub>A</sub> is independent of all but at most d := mt other bad events.</p>
+
+      <p><strong>Choose λ.</strong> The symmetric LLL hypothesis e · p · (d + 1) ≤ 1 becomes:</p>
+      <Tex block>{String.raw`e \cdot 2\,\exp\!\left(-\frac{\lambda^2}{2m}\right) \cdot (mt + 1) \;\le\; 1.`}</Tex>
+      <p>Take logarithms of both sides:</p>
+      <Tex block>{String.raw`1 + \ln 2 + \ln(mt + 1) \;\le\; \frac{\lambda^2}{2m},`}</Tex>
+      <p>so we need</p>
+      <Tex block>{String.raw`\lambda^2 \;\ge\; 2m\bigl(1 + \ln 2 + \ln(mt + 1)\bigr).`}</Tex>
+      <p>For mt large, ln(mt + 1) = Θ(log(mt)), so taking λ = C √(m log(mt)) for a sufficiently large constant C makes the LLL hypothesis hold.</p>
+
+      <p><strong>Apply LLL and conclude.</strong> By the symmetric Lovász Local Lemma:</p>
+      <Tex block>{String.raw`P\!\left(\bigcap_{A \in \mathcal{A}} \neg B_A\right) \;>\; 0.`}</Tex>
+      <p>So at least one coloring χ satisfies max<sub>A</sub> |Z<sub>A</sub>| ≤ λ. By the definition of discrepancy as the min over all colorings:</p>
+      <Tex block>{String.raw`\mathrm{disc}(\mathcal{A}) \;\le\; \lambda \;=\; O\!\bigl(\sqrt{m \log(mt)}\,\bigr).`}</Tex>
 
       <p className="qed">∎</p>
     </div>

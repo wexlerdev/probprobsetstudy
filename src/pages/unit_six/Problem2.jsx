@@ -15,43 +15,40 @@ const PROOF_MODES = [MODES.LEARN, MODES.PRACTICE, MODES.QUIZ, MODES.PROOF]
 function FormalProof() {
   return (
     <div className="formal-proof">
-      <h2>Formal Proof</h2>
+      <h2>Proof</h2>
 
-      <p className="part-label">Part (a). Two explicit values of B.</p>
-      <Tex block>{String.raw`\begin{aligned}
-        & B\!\left(\tfrac12, \tfrac13, \tfrac23, \tfrac23, \tfrac34\right): \\
-        & \quad \tfrac{2}{3}+\tfrac{2}{3} > 1,\ \tfrac{2}{3}+\tfrac{3}{4} > 1
-            && \text{(big items pairwise conflict} \Rightarrow B \ge 3) \\
-        & \quad \tfrac12 + (\text{any big}) > 1
-            && \text{(}\tfrac12 \text{ in own bin or with } \tfrac13 \Rightarrow B \ge 4\text{)} \\
-        & \quad \bigl\{\tfrac34\bigr\},\ \bigl\{\tfrac23, \tfrac13\bigr\},\ \bigl\{\tfrac23\bigr\},\ \bigl\{\tfrac12\bigr\}
-            && \text{(valid 4-bin packing} \Rightarrow B \le 4) \\
-        & \quad \therefore\; B = 4. \\[4pt]
-        & B\!\left(\tfrac12, \tfrac14, \dots, \tfrac{1}{2^m}\right) = 1:
-            \quad \textstyle\sum_{k=1}^m 2^{-k} = 1 - 2^{-m} < 1.
-      \end{aligned}`}</Tex>
+      <p className="part-label">Part (a). Two values of B.</p>
 
-      <p className="part-label">Part (b). For x<sub>1</sub>, ..., x<sub>n</sub> ∈ [0, 1]: Σ x<sub>i</sub> ≤ B ≤ 1 + 2 Σ x<sub>i</sub>.</p>
-      <Tex block>{String.raw`\begin{aligned}
-        \textstyle\sum_{i=1}^n x_i &\le B
-          && \text{(each bin holds mass} \le 1; B \text{ bins hold all items)} \\
-        \text{First-Fit} & : \text{at most one bin ends with fill} \le \tfrac12;
-          && \text{(else first item in later half-empty bin would fit earlier)} \\
-        \textstyle\sum x_i &> (B_{\!FF} - 1)/2
-          && \text{(sum of fills)} \\
-        B \;\le\; B_{\!FF} &\;\le\; 1 + 2\,\textstyle\sum_{i=1}^n x_i.
-          && \text{(} B_{\!FF} \text{ integer)}
-      \end{aligned}`}</Tex>
+      <p><strong>B(1/2, 1/3, 2/3, 2/3, 3/4) = 4.</strong> The three "big" items 2/3, 2/3, 3/4 pairwise sum to more than 1 (since 2/3 + 2/3 = 4/3 and 2/3 + 3/4 = 17/12), so no two of them can share a bin — hence B ≥ 3.</p>
 
-      <p className="part-label">Part (c). E[X<sub>i</sub>] ≥ 0.1 ⟹ B<sub>N</sub> concentrates around E[B<sub>N</sub>] ≍ N.</p>
-      <Tex block>{String.raw`\begin{aligned}
-        0.1\,N \;\le\; \mathbb{E}[B_N] \;&\le\; 1 + 2N \;\Longrightarrow\; \mathbb{E}[B_N] \asymp N
-          && \text{(take \(\mathbb{E}\) of (b))} \\
-        \bigl|\,B_N(x) - B_N(x \text{ with one } x_i \text{ swapped})\,\bigr| \;&\le\; 1
-          && \text{(open one new bin for the replacement)} \\
-        \text{McDiarmid } (c_i = 1) :\; \mathbb{P}\!\bigl(|B_N - \mathbb{E}[B_N]| \ge t\bigr) \;&\le\; 2\,\exp\!\bigl(-2t^2/N\bigr) \\
-        t = 0.01\,\mathbb{E}[B_N],\;\, \mathbb{E}[B_N] \ge 0.1\,N \;&\Longrightarrow\; \text{bound} \le 2\,e^{-2 \cdot 10^{-6}\,N} \le e^{-cN}.
-      \end{aligned}`}</Tex>
+      <p>Now look at 1/2. We have 1/2 + 2/3 = 7/6 &gt; 1 and 1/2 + 3/4 = 5/4 &gt; 1, so 1/2 cannot share a bin with any big item. Its only legal partner is 1/3 (since 1/2 + 1/3 = 5/6 ≤ 1).</p>
+
+      <p>In any 3-bin packing, the three bigs occupy all three bins. So 1/3 has to squeeze into one of those three (only 2/3 + 1/3 = 1 works), leaving 1/2 with nowhere to go. So a 3-bin packing is impossible, and B ≥ 4. The packing {'{'}3/4{'}'}, {'{'}2/3 + 1/3{'}'}, {'{'}2/3{'}'}, {'{'}1/2{'}'} achieves B = 4.</p>
+
+      <p><strong>B(1/2, 1/4, ..., 1/2<sup>m</sup>) = 1.</strong> The total mass is the geometric series 1 − 1/2<sup>m</sup>, which is strictly less than 1, so all items fit in a single bin.</p>
+
+      <p className="part-label">Part (b). Σ x<sub>i</sub> ≤ B ≤ 1 + 2 Σ x<sub>i</sub>.</p>
+
+      <p><strong>Lower bound.</strong> Each bin holds total mass ≤ 1, and the B bins of an optimal packing together hold every item. So Σ x<sub>i</sub> ≤ B.</p>
+
+      <p><strong>Upper bound.</strong> Run First-Fit (process items in order; place each in the first bin where it fits, opening a new bin only when none does). Let B<sub>FF</sub> be the number of bins used. We claim that <em>at most one</em> of those bins ends with fill ≤ 1/2.</p>
+
+      <p>Suppose for contradiction that two bins B<sub>i</sub> and B<sub>j</sub> with i &lt; j both end with fill ≤ 1/2. Let z be the first item placed in B<sub>j</sub>. Then z is one item in B<sub>j</sub>, so z ≤ (final fill of B<sub>j</sub>) ≤ 1/2. At the moment z was placed, B<sub>i</sub>'s fill was ≤ its final fill (fills only grow over time), hence ≤ 1/2. So z + (B<sub>i</sub>'s fill then) ≤ 1, meaning z would have fit in B<sub>i</sub> — contradicting the rule that opens B<sub>j</sub>. So at most one bin ends ≤ 1/2 full.</p>
+
+      <p>So at least B<sub>FF</sub> − 1 of the bins have fill &gt; 1/2, giving:</p>
+      <Tex block>{String.raw`\sum_{i=1}^{n} x_i \;>\; \frac{B_{\!FF} - 1}{2} \quad\Longrightarrow\quad B_{\!FF} \;\le\; 1 + 2\!\sum_{i=1}^{n} x_i.`}</Tex>
+      <p>Since B ≤ B<sub>FF</sub> (B is the minimum over all packings), we get B ≤ 1 + 2 Σ x<sub>i</sub>.</p>
+
+      <p className="part-label">Part (c). B<sub>N</sub> concentrates around its mean, with E[B<sub>N</sub>] ≍ N.</p>
+
+      <p>Take expectations of (b)'s bounds, using E[X<sub>i</sub>] ≥ 0.1 and X<sub>i</sub> ≤ 1:</p>
+      <Tex block>{String.raw`0.1\,N \;\le\; E[B_N] \;\le\; 1 + 2N,`}</Tex>
+      <p>so E[B<sub>N</sub>] = Θ(N).</p>
+
+      <p>Bounded differences: changing any single X<sub>i</sub> changes B<sub>N</sub> by at most 1. (Take an optimal packing of the original, remove the changed item from its bin — uses ≤ B<sub>N</sub> bins for the rest — and add the replacement in a brand-new bin. Total: ≤ B<sub>N</sub> + 1 bins. By symmetry the difference is bounded by 1 in absolute value.) So McDiarmid applies with c<sub>i</sub> = 1 for every i:</p>
+      <Tex block>{String.raw`P\!\left(|B_N - E[B_N]| \ge t\right) \;\le\; 2\,\exp\!\left(-\frac{2 t^2}{N}\right).`}</Tex>
+
+      <p>Set t = 0.01 E[B<sub>N</sub>]. Using E[B<sub>N</sub>] ≥ 0.1 N, we have t² ≥ (0.001 N)² = 10<sup>−6</sup> N², so t²/N ≥ 10<sup>−6</sup> N. The bound becomes 2 e<sup>−2·10⁻⁶ N</sup>, which is ≤ e<sup>−cN</sup> for any constant c &lt; 2·10<sup>−6</sup> once N is large enough (the prefactor 2 absorbs into the exponent).</p>
 
       <p className="qed">∎</p>
     </div>

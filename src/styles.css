@@ -193,6 +193,13 @@ em { font-style: italic; }
   text-align: right; color: #d4a574;
   font-size: 18px; margin-top: 18px;
 }
+.formal-proof p {
+  margin: 10px 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #c4b5a0;
+}
+.formal-proof p strong { color: #d4a574; font-weight: 600; }
 .tex-block {
   margin: 8px 0; padding: 10px 14px;
   background: #221e1a; border: 1px solid #2e2924; border-radius: 8px;
