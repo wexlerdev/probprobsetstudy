@@ -1,7 +1,7 @@
 ---
 title: Final Exam Proof Walkthroughs (3 problems, "Unit 7" section)
 type: feat
-status: active
+status: completed
 date: 2026-05-13
 ---
 
