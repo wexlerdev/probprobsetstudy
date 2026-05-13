@@ -22,8 +22,8 @@ function FormalProof() {
       <p>For each x ∈ S with p(x) := P(X = x) ∈ [0, 1], the term −p(x) log₂ p(x) is nonneg (with the convention 0 · log 0 = 0). Summing,</p>
       <Tex block>{String.raw`H(X) \;=\; \sum_{x \in S} -p(x) \log_{2} p(x) \;\ge\; 0.`}</Tex>
 
-      <p>For the upper bound, rewrite H(X) as an expectation and apply Jensen's inequality to the concave function log₂:</p>
-      <Tex block>{String.raw`H(X) \;=\; E\!\left[\log_{2}\!\frac{1}{p(X)}\right] \;\le\; \log_{2} E\!\left[\frac{1}{p(X)}\right] \;=\; \log_{2}\!\left(\sum_{x:\,p(x)>0} p(x)\cdot\frac{1}{p(x)}\right) \;=\; \log_{2}|\mathrm{supp}(X)| \;\le\; \log_{2}|S|.`}</Tex>
+      <p>For the upper bound, assume (WLOG) that p(x) &gt; 0 for every x ∈ S — if some x has p(x) = 0, drop it, since the 0·log 0 = 0 convention makes H(X) unchanged. Then rewrite H(X) as an expectation and apply Jensen's inequality to the concave function log₂:</p>
+      <Tex block>{String.raw`H(X) \;=\; E\!\left[\log_{2}\!\frac{1}{p(X)}\right] \;\le\; \log_{2} E\!\left[\frac{1}{p(X)}\right] \;=\; \log_{2}\!\left(\sum_{x \in S} p(x)\cdot\frac{1}{p(x)}\right) \;=\; \log_{2}\!\left(\sum_{x \in S} 1\right) \;=\; \log_{2}|S|.`}</Tex>
 
       <p className="part-label">Part (b). For any extraction function Ext : S → {'{'}0,1{'}'}*, E[|Ext(X)|] ≤ H(X).</p>
 
@@ -183,21 +183,25 @@ export default function Problem3() {
           The second derivative of log<sub>2</sub>(y) = (ln y)/(ln 2) is −1/(y² ln 2), which is negative for y &gt; 0. Negative second derivative ⇒ concave. Geometrically, log lies below its tangent line at every point.
         </Toggle>
 
+        <p>
+          Before applying Jensen, we make a small simplification: <strong>assume WLOG that p(x) &gt; 0 for every x ∈ S</strong>.
+          If some x ∈ S has p(x) = 0, drop it from S — by the convention 0·log 0 = 0 those values contribute nothing to H(X), so removing them changes nothing. From here on, every x ∈ S has positive probability.
+        </p>
+
         <p>Apply Jensen with f = log<sub>2</sub> and Y = 1/p(X):</p>
         <MathBlock>H(X) = E[log<sub>2</sub>(1/p(X))] ≤ log<sub>2</sub>(E[1/p(X)])</MathBlock>
 
-        <p>Now compute the inner expectation:</p>
-        <MathBlock>E[1/p(X)] = &Sigma;<sub>x: p(x) &gt; 0</sub> p(x) · (1/p(x)) = &Sigma;<sub>x: p(x) &gt; 0</sub> 1 = |supp(X)|</MathBlock>
-        <p>where supp(X) = {'{'}x ∈ S : p(x) &gt; 0{'}'} is the <em>support</em> of X. Since supp(X) ⊆ S:</p>
-        <MathBlock>E[1/p(X)] = |supp(X)| ≤ |S|.</MathBlock>
+        <p>Now compute the inner expectation. Since every x ∈ S has p(x) &gt; 0, we can divide:</p>
+        <MathBlock>E[1/p(X)] = &Sigma;<sub>x ∈ S</sub> p(x) · (1/p(x)) = &Sigma;<sub>x ∈ S</sub> 1 = |S|</MathBlock>
+        <p>The p(x)'s cancel and we're left with a sum of |S| ones.</p>
 
         <p>Substituting back:</p>
         <Callout type="key">
-          H(X) ≤ log<sub>2</sub>(|supp(X)|) ≤ log<sub>2</sub>|S|.   ✓
+          H(X) ≤ log<sub>2</sub>|S|.   ✓
         </Callout>
 
         <Toggle label="When is the upper bound tight?">
-          H(X) = log<sub>2</sub>|S| iff (i) supp(X) = S (every outcome has positive probability) AND (ii) Jensen's inequality is an equality. Jensen is tight on log iff 1/p(X) is constant a.s., i.e. p(x) is constant on supp(X). Combined: X is <strong>uniform on S</strong>. So entropy is maximized exactly by the uniform distribution — consistent with intuition that "uniform = most random."
+          H(X) = log<sub>2</sub>|S| iff (i) every x ∈ S has p(x) &gt; 0 (no values were dropped) AND (ii) Jensen's inequality is an equality. Jensen is tight on log iff 1/p(X) is constant a.s., i.e. p(x) is the same for every x. Combined: X is <strong>uniform on S</strong>. So entropy is maximized exactly by the uniform distribution — consistent with intuition that "uniform = most random."
         </Toggle>
       </Step>
 
@@ -291,7 +295,7 @@ export default function Problem3() {
           <div>p(x) ∈ [0,1] ⇒ −p(x) log<sub>2</sub> p(x) ≥ 0 ⇒ H(X) = Σ ≥ 0</div>
           <br />
           <div className="comment">// (a) Upper bound: rewrite + Jensen on concave log</div>
-          <div>H(X) = E[log<sub>2</sub>(1/p(X))] ≤ log<sub>2</sub> E[1/p(X)] = log<sub>2</sub>|supp(X)| ≤ log<sub>2</sub>|S|</div>
+          <div>H(X) = E[log<sub>2</sub>(1/p(X))] ≤ log<sub>2</sub> E[1/p(X)] = log<sub>2</sub>|S|     [WLOG p(x) &gt; 0 ∀ x]</div>
           <br />
           <div className="comment">// (b) Per-x inequality from extraction property</div>
           <div>p(x) = P(X=x) ≤ P(Ext(X) = Ext(x)) = 2<sup>−|Ext(x)|</sup></div>
