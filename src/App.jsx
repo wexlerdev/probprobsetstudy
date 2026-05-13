@@ -14,6 +14,9 @@ import U6Problem1 from './pages/unit_six/Problem1'
 import U6Problem2 from './pages/unit_six/Problem2'
 import U6Problem3 from './pages/unit_six/Problem3'
 import U6Problem4 from './pages/unit_six/Problem4'
+import U7Problem1 from './pages/unit_seven/Problem1'
+import U7Problem2 from './pages/unit_seven/Problem2'
+import U7Problem3 from './pages/unit_seven/Problem3'
 
 export default function App() {
   return (
@@ -36,6 +39,10 @@ export default function App() {
         <Route path="/unit-6/problem-2" element={<U6Problem2 />} />
         <Route path="/unit-6/problem-3" element={<U6Problem3 />} />
         <Route path="/unit-6/problem-4" element={<U6Problem4 />} />
+        {/* Unit 7: Final Exam Walkthroughs */}
+        <Route path="/unit-7/problem-1" element={<U7Problem1 />} />
+        <Route path="/unit-7/problem-2" element={<U7Problem2 />} />
+        <Route path="/unit-7/problem-3" element={<U7Problem3 />} />
       </Routes>
     </DifficultyProvider>
   )

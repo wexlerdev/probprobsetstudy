@@ -31,6 +31,15 @@ const units = [
       { num: 4, title: 'Harris / FKG Inequality', path: '/unit-6/problem-4' },
     ],
   },
+  {
+    num: 7,
+    label: 'Unit 7',
+    problems: [
+      { num: 1, title: '0/1 Matrix Discrepancy', path: '/unit-7/problem-1' },
+      { num: 2, title: 'Triangle-Free Lower Bounds', path: '/unit-7/problem-2' },
+      { num: 3, title: 'Entropy & Extraction', path: '/unit-7/problem-3' },
+    ],
+  },
 ]
 
 export default function Nav() {

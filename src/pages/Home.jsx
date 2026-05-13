@@ -104,6 +104,33 @@ const units = [
       },
     ],
   },
+  {
+    num: 7,
+    label: 'UNIT 7',
+    problems: [
+      {
+        num: 1,
+        title: '0/1 Matrix Discrepancy: Both Directions',
+        route: '/unit-7/problem-1',
+        subtitle:
+          'Final exam P1. (a) A random sign vector achieves \u2016Ax\u2016\u221e = O(\u221a(n log n)) by Hoeffding + union bound. (b) A random 0/1 matrix forces \u2016By\u2016\u221e \u2265 c\u221an for every sign vector \u2014 anti-concentration + double union bound.',
+      },
+      {
+        num: 2,
+        title: 'Lower Bounds on P(triangle-free) in G(n,p)',
+        route: '/unit-7/problem-2',
+        subtitle:
+          'Final exam P2. Three lower bounds on the triangle-free probability: (a) trivial via "no edges", (b) via FKG/Harris on indicators, (c) combine and compare to Janson\u2019s matching upper bound from class.',
+      },
+      {
+        num: 3,
+        title: 'Entropy Bounds and Extraction Functions',
+        route: '/unit-7/problem-3',
+        subtitle:
+          'Final exam P3. (a) 0 \u2264 H(X) \u2264 log\u2082|S| via Jensen on the concave log. (b) For any extraction function Ext, E[|Ext(X)|] \u2264 H(X) \u2014 a Kraft-style bridge from distribution to code length.',
+      },
+    ],
+  },
 ]
 
 export default function Home() {
